@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Beating the Water</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="uploadfolders">
+      <div class="csv">
+        <h1>
+          Upload your file
+        </h1>
+        <p>
+          File should be .csv
+        </p>
+        <div class="file-drop-area">
+          <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
+          <span class="file-msg">or drag and drop files here</span>
+          <input class="file-input" type="file" multiple>
+        </div>
+      </div>
+      <div class="tif">
+        <h1>
+          Upload your file
+        </h1>
+        <p>
+          File should be .tif or .tiff
+        </p>
+        <div class="file-drop-area">
+          <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
+          <span class="file-msg">or drag and drop files here</span>
+          <input class="file-input" type="file" multiple>
+        </div>
+      </div>
+    </div>
+    <div class="convertbutton">
+      <img src="{% static 'images/convert.png' %}" alt="convert button" width="100%" height="auto">
+    </div>
+    <div class="converted">
+      <h1>hey</h1>
+    </div>
+
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="{% static 'js/upload.js' %}"></script>
+  </body>
+</html>
