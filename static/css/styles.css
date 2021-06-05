@@ -117,12 +117,12 @@ body:hover {
     width: auto;
     transition: transform 1s;
     filter: grayscale(70%);
-    transform: scale(1)
+    transform: scale(1);
 }
 
 .convertbutton img:hover {
   filter: grayscale(0%);
-  transform: scale(1.1)
+  transform: scale(1.1);
   }
 
 .converted {

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en" dir="ltr">
@@ -8,40 +10,55 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
   </head>
+ 
   <body>
-    <div class="uploadfolders">
-      <div class="csv">
-        <h1>
-          Upload your file
-        </h1>
-        <p>
-          File should be .csv
-        </p>
-        <div class="file-drop-area">
-          <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
-          <span class="file-msg">or drag and drop files here</span>
-          <input class="file-input" type="file" multiple>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+  
+      <div class="uploadfolders">
+        <div class="csv">
+          <h1>
+            Upload your file
+          </h1>
+          <p>
+            File should be .csv
+          </p>
+          <div class="file-drop-area">
+            <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
+            <span class="file-msg">or drag and drop files here</span>
+            <input class="file-input" type="file" name="csvdoc"  >
+          </div>
+        </div>
+      
+        <div class="tif">
+          <h1>
+            Upload your file
+          </h1>
+          <p>
+            File should be .tif or .tiff
+          </p>
+          <div class="file-drop-area">
+            <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
+            <span class="file-msg">or drag and drop files here</span>
+            <input class="file-input" type="file" name="tiffdoc" >
+          </div>
         </div>
       </div>
-      <div class="tif">
-        <h1>
-          Upload your file
-        </h1>
-        <p>
-          File should be .tif or .tiff
-        </p>
-        <div class="file-drop-area">
-          <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
-          <span class="file-msg">or drag and drop files here</span>
-          <input class="file-input" type="file" multiple>
-        </div>
+      
+      
+      <div class="convertbutton">
+        <button style="border: none; background:none; " type="submit">
+          <img style="cursor: pointer" src="{% static 'images/convert.png' %}" alt="convert button" width="100%" height="auto">
+        </button>
+        
       </div>
-    </div>
-    <div class="convertbutton">
-      <img src="{% static 'images/convert.png' %}" alt="convert button" width="100%" height="auto">
-    </div>
+    </form>
+
+    
+    
     <div class="converted">
-      <h1>hey</h1>
+      <h1>{{convertOutput}}</h1>
     </div>
 
 
