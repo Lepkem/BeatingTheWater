@@ -10,12 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
   </head>
- 
+
   <body>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      
-  
+
+
       <div class="uploadfolders">
         <div class="csv">
           <h1>
@@ -27,10 +27,10 @@
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
             <span class="file-msg">or drag and drop files here</span>
-            <input class="file-input" type="file" name="csvdoc"  >
+            <input class="file-input" type="file" name="csvdoc"  accept=".csv">
           </div>
         </div>
-      
+
         <div class="tif">
           <h1>
             Upload your file
@@ -41,24 +41,32 @@
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
             <span class="file-msg">or drag and drop files here</span>
-            <input class="file-input" type="file" name="tiffdoc" >
+            <input class="file-input" type="file" name="tiffdoc" accept=".tiff">
           </div>
         </div>
       </div>
-      
-      
+
       <div class="convertbutton">
         <button style="border: none; background:none; " type="submit">
           <img style="cursor: pointer" src="{% static 'images/convert.png' %}" alt="convert button" width="100%" height="auto">
         </button>
-        
+
       </div>
     </form>
 
-    
-    
     <div class="converted">
-      <h1>{{convertOutput}}</h1>
+      <h1 class="output">{{convertOutput}}</h1>
+      <div class="cimg">
+        <img src="{% static 'images/temp.png' %}" alt="folder" width="20%" height="auto">
+      </div>
+      <div class="cimg2">
+        <img src="{% static 'images/temp.png' %}" alt="folder" width="20%" height="auto">
+      </div>
+      <div class="cimg3">
+        <a href="{% static 'images/temp.png' %}" download>
+          <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
+        </a>
+      </div>
     </div>
 
 
