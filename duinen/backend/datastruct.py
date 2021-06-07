@@ -150,7 +150,35 @@ class Node:
             return False
         return True
 
-    def _calculate_out(self, entry : Point, slope : float) -> Tuple[Point, Node]:
+    def _calculate_out(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+        quadrant = slope.get_quadrant()
+        if(quadrant < 0):
+            return self._intersect_axis(entry, slope)
+        elif(quadrant == Slope.Quadrant.First):
+            return self._intersect_first(entry, slope)
+        elif(quadrant == Slope.Quadrant.Second):
+            return self._intersect_second(entry, slope)
+        elif(quadrant == Slope.Quadrant.Third):
+            return self._intersect_third(entry, slope)
+        elif(quadrant == Slope.Quadrant.Fourth):
+            return self._intersect_fourth(entry, slope)
+        else:
+            raise ValueError("Invalid slope.")
+
+
+    def _intersect_axis(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+        raise NotImplementedError()
+
+    def _intersect_first(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+        raise NotImplementedError()
+
+    def _intersect_second(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+        raise NotImplementedError()
+
+    def _intersect_third(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+        raise NotImplementedError()
+
+    def _intersect_fourth(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
         raise NotImplementedError()
 
     def _subscribe_neighbors(self):
