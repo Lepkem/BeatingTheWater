@@ -14,6 +14,53 @@ class Direction(enum.Enum):
     West = 2
     South = 3
 
+class Slope:
+    class Quadrant(enum.Enum):
+        First = 1
+        Second = 2
+        Third = 3
+        Fourth = 4
+        East = -1
+        North = -2
+        West = -3
+        South = -4
+
+    def __init__(self, rocy : float, rocx : float):
+        if(rocx == 0 and rocy == 0):
+            raise ValueError("Slope can't be a point.")
+        self.delta_y_over_x = rocy
+        self.delta_x_over_y = rocx
+
+    def get_quadrant(self) -> int:
+        if(self.rocx == 0):
+            if(self.rocy > 0):
+                return Slope.Quadrant.North
+            elif(self.rocy < 0):
+                return Slope.Quadrant.South
+            else:
+                raise AttributeError()
+        elif(self.rocy == 0):
+            if(self.rocx > 0):
+                return Slope.Quadrant.East
+            elif(self.rocx < 0):
+                return Slope.Quadrant.West
+            else:
+                raise AttributeError()
+        #check if first
+        elif(self.rocy > 0 and self.rocx > 0):
+            return Slope.Quadrant.First
+        #check if second
+        elif(self.rocy > 0 and self.rocx < 0):
+            return Slope.Quadrant.Second
+        #check if third
+        elif(self.rocy < 0 and self.rocx < 0):
+            return Slope.Quadrant.Third
+        #check if fourth
+        elif(self.rocy < 0 and self.rocx > 0):
+            return Slope.Quadrant.Fourth
+        else:
+            AssertionError("Implementation fault in Slope.get_quadrant: indecisive")
+
 class Point:
     def __init__(self, x: float, y: float):
         self.x = x
