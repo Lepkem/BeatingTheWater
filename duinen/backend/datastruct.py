@@ -1,6 +1,8 @@
 import enum
 from math import sqrt
 from typing import Tuple
+from io import IOBase
+import random
 from __future__ import annotations
 
 class Rating(enum.Enum):
@@ -276,4 +278,49 @@ class Node:
         out, next = self._calculate_out(entry, slope)
         distance = entry.distance(out) if self._rating != Rating.Weak else 0
         return next, out, distance
+
+class ImageSingleton:
+    class Image:
+        def __init__(self):
+            self.x_min = None
+            self.x_max = None
+            self.y_min = None
+            self.y_max = None
+            self.northwest = None
+            self.northeast = None
+            self.southwest = None
+            self.southeast = None
+            self.complete = False
+
+        def populate(self, datasource: IOBase):
+            raise NotImplementedError()
+
+        def seek(self, x: float, y: float) -> Node:
+            raise NotImplementedError()
+
+    _instance = None
+
+    @staticmethod
+    def get_instance() -> Image:
+        return ImageSingleton._instance
+
+    @staticmethod
+    def has_instance() -> bool:
+        return ImageSingleton._instance is not None
+
+    @staticmethod
+    def try_get_instance() -> Tuple[bool, Image]:
+        return ImageSingleton.has_instance(), ImageSingleton.get_instance
+
+    @staticmethod
+    def create() -> Image:
+        if(ImageSingleton._instance is not None):
+            raise RuntimeError("ImageSingleton: At most one instance may exist at all times.")
+        else:
+            ImageSingleton._instance = ImageSingleton.Image()
+            return ImageSingleton._instance
+
+    @staticmethod
+    def dispose():
+        ImageSingleton._instance = None
 
