@@ -153,7 +153,7 @@ class Node:
     def _calculate_out(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
         quadrant = slope.get_quadrant()
         if(quadrant < 0):
-            return self._intersect_axis(entry, slope)
+            return self._intersect_axis(entry, slope, quadrant)
         elif(quadrant == Slope.Quadrant.First):
             return self._intersect_first(entry, slope)
         elif(quadrant == Slope.Quadrant.Second):
@@ -166,20 +166,69 @@ class Node:
             raise ValueError("Invalid slope.")
 
 
-    def _intersect_axis(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        raise NotImplementedError()
+    def _intersect_axis(self, entry : Point, slope : Slope, quadrant : int) -> Tuple[Point, Node]:
+        if(quadrant == Slope.Quadrant.East):
+            return Point(self._x_max, entry.y), self._east
+        elif(quadrant == Slope.Quadrant.North):
+            return Point(entry.x, self._y_max), self._north
+        elif(quadrant == Slope.Quadrant.West):
+            return Point(self._x_min, entry.y), self._west
+        elif(quadrant == Slope.Quadrant.South):
+            return Point(entry.x, self._y_min), self._south
 
     def _intersect_first(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        raise NotImplementedError()
+        dx = self._x_max - entry.x
+        dy = self._y_max - entry.y
+        dx_derived = dy*slope.rocx
+        if(dx < dx_derived):
+            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._east
+        elif(dx > dx_derived):
+            return Point(entry.x + dx_derived, entry.y + dy), self._north
+        else:
+            next = self._north._east if self._north is not None and self._north._east is not None else None
+            next = self._east._north if self._east is not None and self._east._north is not None else next
+            return Point(self._x_max, self._y_max), next
 
     def _intersect_second(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        raise NotImplementedError()
+        dx = self._x_min - entry.x
+        dy = self._y_max - entry.y
+        dx_derived = dy*slope.rocx
+        if(dx > dx_derived):
+            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._west
+        elif(dx < dx_derived):
+            return Point(entry.x + dx_derived, entry.y + dy), self._north
+        else:
+            next = self._north._west if self._north is not None and self._north._west is not None else None
+            next = self._west._north if self._west is not None and self._west._north is not None else next
+            return Point(self._x_min, self._y_max), next
+
 
     def _intersect_third(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        raise NotImplementedError()
+        dx = self._x_min - entry.x
+        dy = self._y_min - entry.y
+        dx_derived = dy*slope.rocx
+        if(dx > dx_derived):
+            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._west
+        elif(dx < dx_derived):
+            return Point(entry.x + dx_derived, entry.y + dy), self._south
+        else:
+            next = self._south._west if self._south is not None and self._south._west is not None else None
+            next = self._west._south if self._west is not None and self._west._south is not None else next
+            return Point(self._x_min, self._y_min), next
+
 
     def _intersect_fourth(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        raise NotImplementedError()
+        dx = self._x_max - entry.x
+        dy = self._y_min - entry.y
+        dx_derived = dy*slope.rocx
+        if(dx < dx_derived):
+            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._east
+        elif(dx > dx_derived):
+            return Point(entry.x + dx_derived, entry.y + dy), self._south
+        else:
+            next = self._south._east if self._south is not None and self._south._east is not None else None
+            next = self._east._south if self._east is not None and self._east._south is not None else next
+            return Point(self._x_max, self._y_min), next
 
     def _subscribe_neighbors(self):
         if(self._notify is None):
