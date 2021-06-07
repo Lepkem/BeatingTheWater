@@ -15,6 +15,9 @@ def linreg() -> Tuple[list, list]:
     return X, lr.predict(X)
 
 def transform_coastline(x_arr: list, y_arr: list) -> Tuple[Point, Point, Slope]:
+    #Extract the first boundary of the coastline and put it in a Point
+    #Extract the other boundary of the coastline and put it in a Point
+    #Calculate the slopes in the dimension of x and y, and put it in a Slope
     raise NotImplementedError()
 
 print(linreg())
