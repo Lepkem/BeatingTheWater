@@ -28,8 +28,8 @@ class Slope:
     def __init__(self, rocy : float, rocx : float):
         if(rocx == 0 and rocy == 0):
             raise ValueError("Slope can't be a point.")
-        self.delta_y_over_x = rocy
-        self.delta_x_over_y = rocx
+        self.rocy = rocy
+        self.rocx = rocx
 
     def get_quadrant(self) -> int:
         if(self.rocx == 0):
