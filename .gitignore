@@ -361,3 +361,4 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/csharp
 
 *.code-workspace
+djang/*
