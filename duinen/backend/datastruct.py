@@ -2,7 +2,6 @@ import enum
 from math import sqrt
 from typing import Tuple
 from io import IOBase
-import random
 from __future__ import annotations
 
 class Rating(enum.Enum):
@@ -269,7 +268,7 @@ class Node:
             if(not southeast and self._south._east is not None):
                 subscribe(self._south._east)
                 southeast = True
-
+    #TODO: replace slope arg by class attr
     def route(self, entry : Point, slope : float, route_id : int) -> Tuple[Node, Point, float]:
         if(not self._is_within(entry)):
             raise ValueError("Entry point out of boundary.")
