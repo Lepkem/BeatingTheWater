@@ -76,6 +76,7 @@ class Point:
 
 class Node:
     threshold = None
+    slope = None
     def __init__(self, x_min : float, x_max : float, y_min : float, y_max : float, height : float):
         if(self.threshold is None):
             raise AttributeError("Can't process the image, because the threshold is not set.")
@@ -148,23 +149,23 @@ class Node:
             return False
         return True
 
-    def _calculate_out(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
-        quadrant = slope.get_quadrant()
+    def _calculate_out(self, entry : Point) -> Tuple[Point, Node]:
+        quadrant = self.slope.get_quadrant()
         if(quadrant < 0):
-            return self._intersect_axis(entry, slope, quadrant)
+            return self._intersect_axis(entry, quadrant)
         elif(quadrant == Slope.Quadrant.First):
-            return self._intersect_first(entry, slope)
+            return self._intersect_first(entry)
         elif(quadrant == Slope.Quadrant.Second):
-            return self._intersect_second(entry, slope)
+            return self._intersect_second(entry)
         elif(quadrant == Slope.Quadrant.Third):
-            return self._intersect_third(entry, slope)
+            return self._intersect_third(entry)
         elif(quadrant == Slope.Quadrant.Fourth):
-            return self._intersect_fourth(entry, slope)
+            return self._intersect_fourth(entry)
         else:
             raise ValueError("Invalid slope.")
 
 
-    def _intersect_axis(self, entry : Point, slope : Slope, quadrant : int) -> Tuple[Point, Node]:
+    def _intersect_axis(self, entry : Point, quadrant : int) -> Tuple[Point, Node]:
         if(quadrant == Slope.Quadrant.East):
             return Point(self._x_max, entry.y), self._east
         elif(quadrant == Slope.Quadrant.North):
@@ -174,12 +175,12 @@ class Node:
         elif(quadrant == Slope.Quadrant.South):
             return Point(entry.x, self._y_min), self._south
 
-    def _intersect_first(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+    def _intersect_first(self, entry : Point) -> Tuple[Point, Node]:
         dx = self._x_max - entry.x
         dy = self._y_max - entry.y
-        dx_derived = dy*slope.rocx
+        dx_derived = dy*self.slope.rocx
         if(dx < dx_derived):
-            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._east
+            return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
         elif(dx > dx_derived):
             return Point(entry.x + dx_derived, entry.y + dy), self._north
         else:
@@ -187,12 +188,12 @@ class Node:
             next = self._east._north if self._east is not None and self._east._north is not None else next
             return Point(self._x_max, self._y_max), next
 
-    def _intersect_second(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+    def _intersect_second(self, entry : Point) -> Tuple[Point, Node]:
         dx = self._x_min - entry.x
         dy = self._y_max - entry.y
-        dx_derived = dy*slope.rocx
+        dx_derived = dy*self.slope.rocx
         if(dx > dx_derived):
-            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._west
+            return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
         elif(dx < dx_derived):
             return Point(entry.x + dx_derived, entry.y + dy), self._north
         else:
@@ -201,12 +202,12 @@ class Node:
             return Point(self._x_min, self._y_max), next
 
 
-    def _intersect_third(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+    def _intersect_third(self, entry : Point) -> Tuple[Point, Node]:
         dx = self._x_min - entry.x
         dy = self._y_min - entry.y
-        dx_derived = dy*slope.rocx
+        dx_derived = dy*self.slope.rocx
         if(dx > dx_derived):
-            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._west
+            return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
         elif(dx < dx_derived):
             return Point(entry.x + dx_derived, entry.y + dy), self._south
         else:
@@ -215,12 +216,12 @@ class Node:
             return Point(self._x_min, self._y_min), next
 
 
-    def _intersect_fourth(self, entry : Point, slope : Slope) -> Tuple[Point, Node]:
+    def _intersect_fourth(self, entry : Point) -> Tuple[Point, Node]:
         dx = self._x_max - entry.x
         dy = self._y_min - entry.y
-        dx_derived = dy*slope.rocx
+        dx_derived = dy*self.slope.rocx
         if(dx < dx_derived):
-            return Point(entry.x + dx, entry.y + dx*slope.rocy), self._east
+            return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
         elif(dx > dx_derived):
             return Point(entry.x + dx_derived, entry.y + dy), self._south
         else:
