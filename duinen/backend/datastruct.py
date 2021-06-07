@@ -46,16 +46,12 @@ class Slope:
                 return Slope.Quadrant.West
             else:
                 raise AttributeError()
-        #check if first
         elif(self.rocy > 0 and self.rocx > 0):
             return Slope.Quadrant.First
-        #check if second
         elif(self.rocy > 0 and self.rocx < 0):
             return Slope.Quadrant.Second
-        #check if third
         elif(self.rocy < 0 and self.rocx < 0):
             return Slope.Quadrant.Third
-        #check if fourth
         elif(self.rocy < 0 and self.rocx > 0):
             return Slope.Quadrant.Fourth
         else:
