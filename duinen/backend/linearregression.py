@@ -1,7 +1,5 @@
 from typing import Tuple
-from .datastruct import Point, Slope
-import numpy as np
-import matplotlib.pyplot as plt
+from .datastruct import Point, Slope as Point, Slope
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
