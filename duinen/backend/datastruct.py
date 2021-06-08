@@ -1,7 +1,8 @@
 import enum
 from math import sqrt
 from typing import Tuple
-from io import IOBase
+from .. import constants
+from . import utilities, linearregression
 from __future__ import annotations
 
 class Rating(enum.Enum):
@@ -303,9 +304,9 @@ class ImageSingleton:
 
             self.complete = False
 
-        def populate(self, datasource: IOBase, coastline: Tuple[Point, Point, Slope], slope: Slope):
-            raise NotImplementedError()
+        def populate(self, inputfiles: dict):
             #set up data stream
+            points_input = utilities.csvToDictFunction(inputfiles.get(constants.CSVKEY))
             #determine area to process
             #process image pixels into nodes
             #set up navigation dictionaries

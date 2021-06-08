@@ -4,11 +4,13 @@ from .datastruct import Point, Slope as Point, Slope, Direction
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
-def linreg() -> Tuple[list, list]:
+def linreg(points: dict) -> Tuple[list, list]:
     """Returns arrays of respectively X and Y values"""
-    data = pd.read_csv('Coord.csv')
-    X = data.iloc[:,1].values.reshape(-1,1)
-    Y = data.iloc[:,2].values.reshape(-1,1)
+    X = list()
+    Y = list()
+    for id in sorted(points.keys()):
+        X.append(points[id].x)
+        Y.append(points[id].y)
     lr = LinearRegression()
     lr.fit(X,Y)
     return X, lr.predict(X)
