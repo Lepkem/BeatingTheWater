@@ -1,6 +1,6 @@
 from os import X_OK
 from typing import Tuple
-from .datastruct import Point, Slope as Point, Slope
+from .datastruct import Point, Slope as Point, Slope, Direction
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
@@ -22,5 +22,16 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[Point, Point, Slope]:
     SlopeXY = Slope(PointB.y-PointA.y,PointB.x-PointA.x)
 
     return PointA, PointB, SlopeXY
+
+def perpendicular_slope(coastline: Slope, dune_direction: Direction):
+    if(dune_direction == Direction.East):
+        #calculate the perpendicular slope in the east direction
+        pass
+    elif(dune_direction == Direction.West):
+        #calculate the perpendicular slope in the west direction
+        pass
+    else:
+        #TODO: Implement edge cases
+        pass
 
 print(linreg())
