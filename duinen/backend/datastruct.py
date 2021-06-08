@@ -82,10 +82,10 @@ class Node:
         if(x_min >= x_max or y_min >= y_max):
             raise ValueError("Invalid boundaries")
 
-        self._x_min = x_min
-        self._x_max = x_max
-        self._y_min = y_min
-        self._y_max = y_max
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
 
         self._west = None
         self._north = None
@@ -137,14 +137,17 @@ class Node:
         else:
             raise ValueError("Direction not recognized")
 
-    def curried_link_neighbor(self, neighbor, direction : int):
+    def curried_link_neighbor(self, neighbor: Node, direction : int):
         self.link_neighbor(neighbor, direction)
         return self
 
+    def get_neighbor(self, direction: int) -> Node:
+        raise NotImplementedError()
+
     def _is_within(self, point : Point) -> bool:
-        if(point.x < self._x_min or point.x > self._x_max):
+        if(point.x < self.x_min or point.x > self.x_max):
             return False
-        if(point.y < self._y_min or point.y > self._y_max):
+        if(point.y < self.y_min or point.y > self.y_max):
             return False
         return True
 
@@ -166,17 +169,17 @@ class Node:
 
     def _intersect_axis(self, entry : Point, quadrant : int) -> Tuple[Point, Node]:
         if(quadrant == Slope.Quadrant.East):
-            return Point(self._x_max, entry.y), self._east
+            return Point(self.x_max, entry.y), self._east
         elif(quadrant == Slope.Quadrant.North):
-            return Point(entry.x, self._y_max), self._north
+            return Point(entry.x, self.y_max), self._north
         elif(quadrant == Slope.Quadrant.West):
-            return Point(self._x_min, entry.y), self._west
+            return Point(self.x_min, entry.y), self._west
         elif(quadrant == Slope.Quadrant.South):
-            return Point(entry.x, self._y_min), self._south
+            return Point(entry.x, self.y_min), self._south
 
     def _intersect_first(self, entry : Point) -> Tuple[Point, Node]:
-        dx = self._x_max - entry.x
-        dy = self._y_max - entry.y
+        dx = self.x_max - entry.x
+        dy = self.y_max - entry.y
         dx_derived = dy*self.slope.rocx
         if(dx < dx_derived):
             return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
@@ -185,11 +188,11 @@ class Node:
         else:
             next = self._north._east if self._north is not None and self._north._east is not None else None
             next = self._east._north if self._east is not None and self._east._north is not None else next
-            return Point(self._x_max, self._y_max), next
+            return Point(self.x_max, self.y_max), next
 
     def _intersect_second(self, entry : Point) -> Tuple[Point, Node]:
-        dx = self._x_min - entry.x
-        dy = self._y_max - entry.y
+        dx = self.x_min - entry.x
+        dy = self.y_max - entry.y
         dx_derived = dy*self.slope.rocx
         if(dx > dx_derived):
             return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
@@ -198,12 +201,12 @@ class Node:
         else:
             next = self._north._west if self._north is not None and self._north._west is not None else None
             next = self._west._north if self._west is not None and self._west._north is not None else next
-            return Point(self._x_min, self._y_max), next
+            return Point(self.x_min, self.y_max), next
 
 
     def _intersect_third(self, entry : Point) -> Tuple[Point, Node]:
-        dx = self._x_min - entry.x
-        dy = self._y_min - entry.y
+        dx = self.x_min - entry.x
+        dy = self.y_min - entry.y
         dx_derived = dy*self.slope.rocx
         if(dx > dx_derived):
             return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
@@ -212,12 +215,12 @@ class Node:
         else:
             next = self._south._west if self._south is not None and self._south._west is not None else None
             next = self._west._south if self._west is not None and self._west._south is not None else next
-            return Point(self._x_min, self._y_min), next
+            return Point(self.x_min, self.y_min), next
 
 
     def _intersect_fourth(self, entry : Point) -> Tuple[Point, Node]:
-        dx = self._x_max - entry.x
-        dy = self._y_min - entry.y
+        dx = self.x_max - entry.x
+        dy = self.y_min - entry.y
         dx_derived = dy*self.slope.rocx
         if(dx < dx_derived):
             return Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
@@ -226,7 +229,7 @@ class Node:
         else:
             next = self._south._east if self._south is not None and self._south._east is not None else None
             next = self._east._south if self._east is not None and self._east._south is not None else next
-            return Point(self._x_max, self._y_min), next
+            return Point(self.x_max, self.y_min), next
 
     def _subscribe_neighbors(self):
         if(self._notify is None):
@@ -281,7 +284,11 @@ class Node:
 
 class ImageSingleton:
     class Image:
+        resolution = None
+
         def __init__(self):
+            if self.resolution is None:
+                raise AttributeError("Image class can't be instantiated while its resolution is not specified.")
             self.x_min = None
             self.x_max = None
             self.y_min = None
@@ -290,13 +297,57 @@ class ImageSingleton:
             self.northeast = None
             self.southwest = None
             self.southeast = None
+
+            self.cornerdict = dict() #Point to Node
+            self._directions = dict() #Node to Tuple[float, float] (x, y) directions
+
             self.complete = False
 
-        def populate(self, datasource: IOBase):
+        def populate(self, datasource: IOBase, coastline: Tuple[Point, Point, Slope], slope: Slope):
             raise NotImplementedError()
+            #set up data stream
+            #determine area to process
+            #process image pixels into nodes
+            #set up navigation dictionaries
+            self._finish()
 
         def seek(self, x: float, y: float) -> Node:
-            raise NotImplementedError()
+            self._checkComplete()
+
+            def closest(min: float, max: float, value: float) -> Tuple[float, float]:
+                mindist = abs(value - min)
+                maxdist = abs(max - value)
+                return min, mindist if mindist <= maxdist else max, maxdist
+            startx, distx = closest(self.x_min, self.x_max, x)
+            starty, disty = closest(self.y_min, self.y_max, y)
+
+            curr = self.cornerdict.get(Point(startx, starty))
+            dirx, diry = self._directions.get(curr)
+            while distx >= self.resolution:
+                curr = curr.get_neighbor(dirx)
+                distx -= self.resolution
+            while disty >= self.resolution:
+                curr = curr.get_neighbor(diry)
+                disty -= self.resolution
+
+            return curr
+            
+        def _checkComplete(self):
+            if not self.complete:
+                raise AttributeError("Can't read image while processing is not complete.")
+        
+        def _finish(self):
+            self.cornerdict[Point(self.northeast.x_max, self.northeast.y_max)] = self.northeast
+            self.cornerdict[Point(self.northwest.x_min, self.northwest.y_max)] = self.northwest
+            self.cornerdict[Point(self.southwest.x_min, self.southwest.y_min)] = self.southwest
+            self.cornerdict[Point(self.southeast.x_max, self.southeast.y_min)] = self.southeast
+
+            self._directions[self.northeast] = (Direction.West, Direction.South)
+            self._directions[self.northwest] = (Direction.East, Direction.South)
+            self._directions[self.southwest] = (Direction.East, Direction.North)
+            self._directions[self.southeast] = (Direction.West, Direction.North)
+
+            self.complete = True
 
     _instance = None
 
