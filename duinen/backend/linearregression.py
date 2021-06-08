@@ -23,15 +23,21 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[Point, Point, Slope]:
 
     return PointA, PointB, SlopeXY
 
-def perpendicular_slope(coastline: Slope, dune_direction: Direction):
+def perpendicular_slope(coastline: Slope, dune_direction: int) -> Slope:
     if(dune_direction == Direction.East):
         #calculate the perpendicular slope in the east direction
         pass
     elif(dune_direction == Direction.West):
         #calculate the perpendicular slope in the west direction
         pass
-    else:
-        #TODO: Implement edge cases
+    elif(dune_direction == Direction.North):
+        #calculate the perpendicular slope in the north direction
         pass
+    elif(dune_direction == Direction.South):
+        #calculate the perpendicular slope in the south direction
+        pass
+    else:
+        #TODO: check for more edge cases
+        raise ValueError("dune_direction argument is outside allowed range")
 
 print(linreg())
