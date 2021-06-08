@@ -1,3 +1,4 @@
+from os import X_OK
 from typing import Tuple
 from .datastruct import Point, Slope as Point, Slope
 import pandas as pd
@@ -14,8 +15,12 @@ def linreg() -> Tuple[list, list]:
 
 def transform_coastline(x_arr: list, y_arr: list) -> Tuple[Point, Point, Slope]:
     #Extract the first boundary of the coastline and put it in a Point
+    PointA = Point(x_arr[0], y_arr[0])
     #Extract the other boundary of the coastline and put it in a Point
+    PointB = Point(x_arr[-1], y_arr[-1])
     #Calculate the slopes in the dimension of x and y, and put it in a Slope
-    raise NotImplementedError()
+    SlopeXY = Slope(PointB.y-PointA.y,PointB.x-PointA.x)
+
+    return PointA, PointB, SlopeXY
 
 print(linreg())
