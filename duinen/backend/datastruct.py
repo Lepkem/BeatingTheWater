@@ -304,10 +304,15 @@ class ImageSingleton:
 
             self.complete = False
 
-        def populate(self, inputfiles: dict):
+        def populate(self, inputfiles: dict, settings: utilities.AlgorithmSettings):
             #set up data stream
             points_input = utilities.csvToDictFunction(inputfiles.get(constants.CSVKEY))
             #determine area to process
+            xvals, yvals = linearregression.linreg(points_input)
+            start, stop, coast_slope = linearregression.transform_coastline(xvals, yvals)
+            Node.slope = linearregression.perpendicular_slope(coast_slope, settings.dune_direction)
+            Node.threshold = settings.threshold
+            #complete the code above
             #process image pixels into nodes
             #set up navigation dictionaries
             self._finish()
