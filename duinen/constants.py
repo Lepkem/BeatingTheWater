@@ -1,0 +1,2 @@
+CSVKEY = 'csvdoc'
+DATAKEY = 'tiffdoc'
