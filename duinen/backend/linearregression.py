@@ -8,8 +8,8 @@ def linreg(points: dict) -> Tuple[list, list]:
     X = list()
     Y = list()
     for id in sorted(points.keys()):
-        X.append(points[id].x)
-        Y.append(points[id].y)
+        X.append([points[id].x, points[id].y])
+        Y.append(points[id].x)
     lr = LinearRegression()
     lr.fit(X,Y)
     return X, lr.predict(X)
