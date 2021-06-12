@@ -3,7 +3,7 @@ import enum
 from math import sqrt
 from typing import Tuple
 from .. import constants
-from . import utilities, linearregression
+import utilities, linearregression
 
 class Rating(enum.Enum):
     Weak = 0

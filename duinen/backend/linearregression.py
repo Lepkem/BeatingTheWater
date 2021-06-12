@@ -1,7 +1,6 @@
 from os import X_OK
 from typing import Tuple
-from .datastruct import Point, Slope, Direction as Point, Slope, Direction
-import pandas as pd
+import datastruct
 from sklearn.linear_model import LinearRegression
 
 def linreg(points: dict) -> Tuple[list, list]:
@@ -15,21 +14,21 @@ def linreg(points: dict) -> Tuple[list, list]:
     lr.fit(X,Y)
     return X, lr.predict(X)
 
-def transform_coastline(x_arr: list, y_arr: list) -> Tuple[Point, Point, Slope]:
+def transform_coastline(x_arr: list, y_arr: list) -> Tuple[datastruct.Point, datastruct.Point, datastruct.Slope]:
     #Extract the first boundary of the coastline and put it in a Point
-    PointA = Point(x_arr[0], y_arr[0])
+    PointA = datastruct.Point(x_arr[0], y_arr[0])
     #Extract the other boundary of the coastline and put it in a Point
-    PointB = Point(x_arr[-1], y_arr[-1])
+    PointB = datastruct.Point(x_arr[-1], y_arr[-1])
     #Calculate the slopes in the dimension of x and y, and put it in a Slope
-    SlopeXY = Slope(PointB.y-PointA.y,PointB.x-PointA.x)
+    SlopeXY = datastruct.Slope(PointB.y-PointA.y,PointB.x-PointA.x)
 
     return PointA, PointB, SlopeXY
 
-def perpendicular_slope(coastline: Slope, dune_direction: Direction):
-    if(dune_direction == Direction.East):
+def perpendicular_slope(coastline: datastruct.Slope, dune_direction: datastruct.Direction):
+    if(dune_direction == datastruct.Direction.East):
         #calculate the perpendicular slope in the east direction
         pass
-    elif(dune_direction == Direction.West):
+    elif(dune_direction == datastruct.Direction.West):
         #calculate the perpendicular slope in the west direction
         pass
     else:

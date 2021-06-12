@@ -1,5 +1,5 @@
 import csv
-from duinen.backend.datastruct import Point
+import datastruct
 
 class AlgorithmSettings:
     def __init__(self, distance: float, threshold: float, min_width: float, dune_direction: int):
@@ -14,5 +14,5 @@ def csvToDictFunction(csvinput):
     csvReader = csv.DictReader(decoded_file)
     for row in csvReader:
         id = row['id']
-        data[id] = Point(float(row['xcoord']), float(row['ycoord']))
+        data[id] = datastruct.Point(float(row['xcoord']), float(row['ycoord']))
     return data
