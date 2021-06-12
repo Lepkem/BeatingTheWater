@@ -1,6 +1,6 @@
 from os import X_OK
 from typing import Tuple
-from .datastruct import Point, Slope as Point, Slope, Direction
+from .datastruct import Point, Slope, Direction as Point, Slope, Direction
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
