@@ -1,4 +1,6 @@
 import csv
+from duinen.backend.geometry import Direction
+from duinen.backend.utilities import AlgorithmSettings
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .backend.datastruct import ImageSingleton
@@ -15,9 +17,10 @@ def home(request):
             # Receiving the inputs from the POST request
             csvfile = request.FILES['csvdoc'] #deprecated
             tifffile = request.FILES['tiffdoc'] #deprecated
+            algosettings = AlgorithmSettings(300, 8, 30, Direction.East)
 
             processed_image = ImageSingleton.create()
-            processed_image.populate(request.FILES)
+            processed_image.populate(request.FILES, algosettings)
 
             # Turning the csv into a dict 
             csvToDict = csvToDictFunction(csvfile)

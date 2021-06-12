@@ -249,6 +249,11 @@ class ImageSingleton:
             Node.threshold = settings.threshold
             #complete the code above
             #process image pixels into nodes
+            data_file = "C:\\Users\\Alexander\\Desktop\\ProjectD_Data\\SpringertduinenAHNhoogdynamisch\\H_2m_2019_Springertduinen.tif"
+            #throws a bunch of non-fatal errors
+            print("beforeqgis")
+            rlayer = QgsRasterLayer(data_file, "H_2m_2019_Springertduinen")
+            print("afterqgis")
             #set up navigation dictionaries
             self._finish()
 
