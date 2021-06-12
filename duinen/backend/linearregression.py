@@ -8,11 +8,11 @@ def linreg(points: dict) -> Tuple[list, list]:
     X = list()
     Y = list()
     for id in sorted(points.keys()):
-        X.append([points[id].x, points[id].y])
-        Y.append(points[id].x)
+        X.append([points[id].y, points[id].x])
+        Y.append(points[id].y)
     lr = LinearRegression()
     lr.fit(X,Y)
-    return X, lr.predict(X)
+    return [x[1] for x in X], lr.predict(X)
 
 def transform_coastline(x_arr: list, y_arr: list) -> Tuple[geometry.Point, geometry.Point, geometry.Slope]:
     #Extract the first boundary of the coastline and put it in a Point
