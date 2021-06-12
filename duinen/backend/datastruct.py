@@ -3,6 +3,7 @@ import enum
 from math import sqrt
 from typing import Tuple
 from .. import constants
+from qgis.core import *
 import utilities, linearregression
 
 class Rating(enum.Enum):
