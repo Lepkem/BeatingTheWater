@@ -225,8 +225,6 @@ class ImageSingleton:
         resolution = None
 
         def __init__(self):
-            if self.resolution is None:
-                raise AttributeError("Image class can't be instantiated while its resolution is not specified.")
             self.x_min = None
             self.x_max = None
             self.y_min = None
