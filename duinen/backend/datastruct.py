@@ -218,7 +218,7 @@ class Node:
         if(self._rating == Rating.Strong):
             self._subscribe_neighbors()
         out, next = self._calculate_out(entry, self.slope)
-        distance = entry.distance(out) if self._rating != Rating.Weak else 0
+        distance = entry.distance(out) if self._rating == Rating.Strong else 0
         return next, out, distance
 
 class ImageSingleton:
