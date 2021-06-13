@@ -13,10 +13,10 @@ def home(request):
 
     # The Convert button is clicked
     if request.method == 'POST':
-        LengthFromDune == request.forms.get['LFD']
-        DuneHeight == request.forms.get['HEIGHT']
-        DuneLength == request.forms.get['LENGTH']
-        Direction == request.forms.get['OW']
+        lengthFromDune = request.forms.get['LFD']
+        duneHeight = request.forms.get['HEIGHT']
+        duneLength = request.forms.get['LENGTH']
+        direction = request.forms.get['OW']
         if 'csvdoc' in request.POST is None or 'tiffdoc' in request.POST:
             context['convertOutput'] = "You need to put in a csv file and tiff image"
         else:
