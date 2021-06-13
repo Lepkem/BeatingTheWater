@@ -2,10 +2,12 @@ from .datastruct import ImageSingleton
 from .utilities import AlgorithmSettings
 from collections import deque
 import logging
-from datetime import date, datetime
+import os
+from datetime import datetime
 
 def run(reqfiles: dict, settings: AlgorithmSettings):
-    logging.basicConfig(filename='..\\logfile.log', encoding='utf-8', level=logging.DEBUG)
+    log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')
+    logging.basicConfig(filename=log_relative_path, level=logging.DEBUG)
 
     #Image processing
     logging.info(f'Start of section "Image processing" at {datetime.now()}')

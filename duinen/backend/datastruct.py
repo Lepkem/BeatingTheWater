@@ -271,7 +271,7 @@ class ImageSingleton:
             xvals, yvals = linearregression.linreg(points_input)
             start, stop, slope = linearregression.transform_coastline(xvals, yvals)
             self.coastline = ImageSingleton.Image.Coastline(start, stop, slope)
-            Node.slope = linearregression.perpendicular_slope(self.coastline[2], settings.dune_direction)
+            Node.slope = linearregression.perpendicular_slope(self.coastline.slope, settings.dune_direction)
             Node.threshold = settings.threshold
             #complete the code above
             #process image pixels into nodes
