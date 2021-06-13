@@ -9,47 +9,20 @@ class Direction(enum.Enum):
     South = 3
 
 class Slope:
-    class Quadrant(enum.Enum):
-        First = 1
-        Second = 2
-        Third = 3
-        Fourth = 4
-        East = -1
-        North = -2
-        West = -3
-        South = -4
-
-    def __init__(self, rocy : float, rocx : float):
-        if(rocx == 0 and rocy == 0):
-            raise ValueError("Slope can't be a point.")
-        self.rocy = rocy
-        self.rocx = rocx
-
-    def get_quadrant(self) -> int:
-        if(self.rocx == 0):
-            if(self.rocy > 0):
-                return Slope.Quadrant.North
-            elif(self.rocy < 0):
-                return Slope.Quadrant.South
-            else:
-                raise AttributeError()
-        elif(self.rocy == 0):
-            if(self.rocx > 0):
-                return Slope.Quadrant.East
-            elif(self.rocx < 0):
-                return Slope.Quadrant.West
-            else:
-                raise AttributeError()
-        elif(self.rocy > 0 and self.rocx > 0):
-            return Slope.Quadrant.First
-        elif(self.rocy > 0 and self.rocx < 0):
-            return Slope.Quadrant.Second
-        elif(self.rocy < 0 and self.rocx < 0):
-            return Slope.Quadrant.Third
-        elif(self.rocy < 0 and self.rocx > 0):
-            return Slope.Quadrant.Fourth
+    """The directional slope is represented by the increase in the dimension of y respective
+    to an increase in the dimension of x of 1, defined as slope; The progression in the x dimension
+    defined as x_progression, which is represented as > 0 for increasing progression
+    and < 0 for decreasing progression."""
+    def __init__(self, slope: float, x_progression: float):
+        if(x_progression == 0):
+            self.x_progression = x_progression
+            self.slope = None
         else:
-            AssertionError("Implementation fault in Slope.get_quadrant: indecisive")
+            self.slope = slope
+            self.x_progression = x_progression
+
+    def dy(self, dx: float) -> float:
+        return self.slope*dx
 
 class Point:
     def __init__(self, x: float, y: float):
