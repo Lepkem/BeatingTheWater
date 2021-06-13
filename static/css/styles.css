@@ -42,7 +42,7 @@ body:hover {
   position: relative;
   float: right;
   width: 30%;
-  margin-top: 55%;
+  margin-top: 45%;
 }
 
 .dune_specs p{
@@ -108,17 +108,66 @@ body:hover {
   user-select: none;
   font-size: 100%;
 }
+.input-number-decrement:active,
+.input-number-increment:active {
+  background: #ddd;
+}
 
+.input-number-decrement {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.input-number3 {
+  width: 40%;
+  vertical-align: top;
+  text-align: center;
+  outline: none;
+}
+
+.input-number3,
 .input-number-decrement,
 .input-number-increment {
-  display: inline-block;
-  width: 15%;
-  line-height: 4vh;
-  background: #f1f1f1;
-  color: #444;
+  border: 1px solid #ccc;
+  height: 4vh;
+  user-select: none;
+  font-size: 100%;
+}
+.input-number-decrement:active,
+.input-number-increment:active {
+  background: #ddd;
+}
+
+.input-number-decrement {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.input-number4 {
+  width: 70%;
+  vertical-align: top;
   text-align: center;
-  font-weight: bold;
-  cursor: pointer;
+  outline: none;
+  border-radius: 0.5vh;
+}
+
+.input-number4,
+.input-number-decrement,
+.input-number-increment {
+  border: 1px solid #ccc;
+  height: 4vh;
+  user-select: none;
+  font-size: 100%;
 }
 .input-number-decrement:active,
 .input-number-increment:active {
