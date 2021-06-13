@@ -32,12 +32,24 @@
         </div>
         <div class="dune_specs">
           <div class="number">
+            <p>HOW FAR TO LOOK FOR IN M</p>
+            <span class="input-number-decrement">–</span><input class="input-number1" type="number" name="LFD" value="1" min="0" max="5000"><span class="input-number-increment">+</span>
+          </div>
+          <div class="number">
             <p>HEIGHT IN M</p>
-            <span class="input-number-decrement">–</span><input class="input-number1" type="text" value="1" min="0" max="80"><span class="input-number-increment">+</span>
+            <span class="input-number-decrement">–</span><input class="input-number2" type="number" name="HEIGHT" value="1" min="0" max="80"><span class="input-number-increment">+</span>
           </div>
           <div class="number">
             <p>LENGTH IN M</p>
-            <span class="input-number-decrement">–</span><input class="input-number2" type="text" value="1" min="0" max="500"><span class="input-number-increment">+</span>
+            <span class="input-number-decrement">–</span><input class="input-number3" type="number" name="LENGTH" value="1" min="0" max="500"><span class="input-number-increment">+</span>
+          </div>
+          <div class="number">
+            <p>OOST OF WEST</p>
+            <input class="input-number4" type="text" name="OW" list="directions">
+            <datalist id="directions">
+              <option>Oost</option>
+              <option>West</option>
+            </datalist>
           </div>
         </div>
         <div class="tif">

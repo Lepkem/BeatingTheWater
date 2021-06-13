@@ -8,6 +8,10 @@ def home(request):
 
     # The Convert button is clicked
     if request.method == 'POST':
+        LengthFromDune == request.forms.get['LFD']
+        DuneHeight == request.forms.get['HEIGHT']
+        DuneLength == request.forms.get['LENGTH']
+        Direction == request.forms.get['OW']
         if 'csvdoc' in request.POST is None or 'tiffdoc' in request.POST:
             context['convertOutput'] = "You need to put in a csv file and tiff image"
         else:
@@ -15,12 +19,12 @@ def home(request):
             csvfile = request.FILES['csvdoc']
             tifffile = request.FILES['tiffdoc']
 
-            # Turning the csv into a dict 
+            # Turning the csv into a dict
             csvToDict = csvToDictFunction(csvfile)
-            
+
             # Passing the data to template (The data below here should later be replaced by the algoritm's output: a tiff image and download button)
             context['convertOutput'] = csvToDict.__str__() + tifffile.name
-            
+
 
     return render(request, template, context)
 
@@ -34,4 +38,3 @@ def csvToDictFunction(csvinput):
         id = row['id']
         data[id] = row
     return data
-                    
