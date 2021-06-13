@@ -20,7 +20,7 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[geometry.Point, geome
     #Extract the other boundary of the coastline and put it in a Point
     PointB = geometry.Point(x_arr[-1], y_arr[-1])
     #Calculate the slopes in the dimension of x and y, and put it in a Slope
-    SlopeXY = geometry.Slope(PointB.y-PointA.y,PointB.x-PointA.x)
+    SlopeXY = geometry.Slope((PointB.y-PointA.y)/(PointB.x-PointA.x), None)
 
     return PointA, PointB, SlopeXY
 

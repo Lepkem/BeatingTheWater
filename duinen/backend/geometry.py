@@ -12,11 +12,12 @@ class Slope:
     """The directional slope is represented by the increase in the dimension of y respective
     to an increase in the dimension of x of 1, defined as slope; The progression in the x dimension
     defined as x_progression, which is represented as > 0 for increasing progression
-    and < 0 for decreasing progression."""
+    and < 0 for decreasing progression. For vertical slope, slope input must be any number > 0
+    for north direction, and any number < 0 for south direction."""
     def __init__(self, slope: float, x_progression: float):
         if(x_progression == 0):
             self.x_progression = x_progression
-            self.slope = None
+            self.slope = slope
         else:
             self.slope = slope
             self.x_progression = x_progression

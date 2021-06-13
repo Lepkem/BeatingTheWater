@@ -90,37 +90,38 @@ class Node:
         return True
 
     def _calculate_out(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
-        quadrant = self.slope.get_quadrant()
-        if(quadrant < 0):
-            return self._intersect_axis(entry, quadrant)
-        elif(quadrant == geometry.Slope.Quadrant.First):
+        if(self.slope.slope == 0 or self.slope.x_progression == 0):
+            return self._intersect_axis(entry)
+        elif(self.slope.slope > 0 and self.slope.x_progression > 0):
             return self._intersect_first(entry)
-        elif(quadrant == geometry.Slope.Quadrant.Second):
+        elif(self.slope.slope < 0 and self.slope.x_progression < 0):
             return self._intersect_second(entry)
-        elif(quadrant == geometry.Slope.Quadrant.Third):
+        elif(self.slope.slope > 0 and self.slope.x_progression < 0):
             return self._intersect_third(entry)
-        elif(quadrant == geometry.Slope.Quadrant.Fourth):
+        elif(self.slope.slope < 0 and self.slope.x_progression > 0):
             return self._intersect_fourth(entry)
         else:
             raise ValueError("Invalid slope.")
 
 
-    def _intersect_axis(self, entry : geometry.Point, quadrant : int) -> Tuple[geometry.Point, Node]:
-        if(quadrant == geometry.Slope.Quadrant.East):
+    def _intersect_axis(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
+        if(self.slope.slope == 0 and self.slope.x_progression > 0):
             return geometry.Point(self.x_max, entry.y), self._east
-        elif(quadrant == geometry.Slope.Quadrant.North):
+        elif(self.slope.x_progression == 0 and self.slope.slope > 0):
             return geometry.Point(entry.x, self.y_max), self._north
-        elif(quadrant == geometry.Slope.Quadrant.West):
+        elif(self.slope.slope == 0 and self.slope.x_progression < 0):
             return geometry.Point(self.x_min, entry.y), self._west
-        elif(quadrant == geometry.Slope.Quadrant.South):
+        elif(self.slope.x_progression == 0 and self.slope.slope < 0):
             return geometry.Point(entry.x, self.y_min), self._south
+        else:
+            raise AttributeError()
 
     def _intersect_first(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
         dx = self.x_max - entry.x
         dy = self.y_max - entry.y
-        dx_derived = dy*self.slope.rocx
+        dx_derived = dy/self.slope.slope
         if(dx < dx_derived):
-            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
+            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.slope), self._east
         elif(dx > dx_derived):
             return geometry.Point(entry.x + dx_derived, entry.y + dy), self._north
         else:
@@ -131,9 +132,9 @@ class Node:
     def _intersect_second(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
         dx = self.x_min - entry.x
         dy = self.y_max - entry.y
-        dx_derived = dy*self.slope.rocx
+        dx_derived = dy/self.slope.slope
         if(dx > dx_derived):
-            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
+            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.slope), self._west
         elif(dx < dx_derived):
             return geometry.Point(entry.x + dx_derived, entry.y + dy), self._north
         else:
@@ -145,9 +146,9 @@ class Node:
     def _intersect_third(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
         dx = self.x_min - entry.x
         dy = self.y_min - entry.y
-        dx_derived = dy*self.slope.rocx
+        dx_derived = dy/self.slope.slope
         if(dx > dx_derived):
-            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._west
+            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.slope), self._west
         elif(dx < dx_derived):
             return geometry.Point(entry.x + dx_derived, entry.y + dy), self._south
         else:
@@ -159,9 +160,9 @@ class Node:
     def _intersect_fourth(self, entry : geometry.Point) -> Tuple[geometry.Point, Node]:
         dx = self.x_max - entry.x
         dy = self.y_min - entry.y
-        dx_derived = dy*self.slope.rocx
+        dx_derived = dy/self.slope.slope
         if(dx < dx_derived):
-            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.rocy), self._east
+            return geometry.Point(entry.x + dx, entry.y + dx*self.slope.slope), self._east
         elif(dx > dx_derived):
             return geometry.Point(entry.x + dx_derived, entry.y + dy), self._south
         else:
@@ -210,13 +211,13 @@ class Node:
                 subscribe(self._south._east)
                 southeast = True
     #TODO: replace slope arg by class attr
-    def route(self, entry : geometry.Point, slope : float, route_id : int) -> Tuple[Node, geometry.Point, float]:
+    def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float]:
         if(not self._is_within(entry)):
             raise ValueError("Entry point out of boundary.")
         self._notify = self._notify_factory(route_id)
         if(self._rating == Rating.Strong):
             self._subscribe_neighbors()
-        out, next = self._calculate_out(entry, slope)
+        out, next = self._calculate_out(entry, self.slope)
         distance = entry.distance(out) if self._rating != Rating.Weak else 0
         return next, out, distance
 
