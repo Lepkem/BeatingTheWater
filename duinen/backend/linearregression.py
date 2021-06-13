@@ -21,7 +21,7 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[geometry.Point, geome
     #Extract the other boundary of the coastline and put it in a Point
     PointB = geometry.Point(x_arr[-1], y_arr[-1])
     #Calculate the slopes in the dimension of x and y, and put it in a Slope
-    SlopeXY = geometry.Slope(PointB.y-PointA.y,PointB.x-PointA.x)
+    SlopeXY = geometry.Slope((PointB.y-PointA.y)/(PointB.x-PointA.x), None)
 
     return PointA, PointB, SlopeXY
 
@@ -32,7 +32,10 @@ def perpendicular_slope(coastline: geometry.Slope, dune_direction: geometry.Dire
     elif(dune_direction == geometry.Direction.West):
         #calculate the perpendicular slope in the west direction
         pass
-    else:
-        #TODO: Implement edge cases
+    elif(dune_direction == geometry.Direction.North):
+        #calculate the perpendicular slope in the north direction
+        pass
+    elif(dune_direction == geometry.Direction.South):
+        #calculate the perpendicular slope in the south direction
         pass
     
