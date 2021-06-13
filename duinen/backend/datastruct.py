@@ -211,19 +211,42 @@ class Node:
                 subscribe(self._south._east)
                 southeast = True
     #TODO: replace slope arg by class attr
-    def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float]:
+    def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float, float]:
         if(not self._is_within(entry)):
             raise ValueError("Entry point out of boundary.")
         self._notify = self._notify_factory(route_id)
         if(self._rating == Rating.Strong):
             self._subscribe_neighbors()
         out, next = self._calculate_out(entry, self.slope)
-        distance = entry.distance(out) if self._rating == Rating.Strong else 0
-        return next, out, distance
+        distance = entry.distance(out)
+        strongdistance = distance if self._rating == Rating.Strong else 0
+        return next, out, distance, strongdistance
 
 class ImageSingleton:
     class Image:
-        resolution = None
+        class Coastline:
+            def __init__(self, start: geometry.Point, stop: geometry.Point, slope: geometry.Slope):
+                self.start = start
+                self.stop = stop
+                self.slope = slope
+
+            def iterable(self) -> list:
+                dx = ImageSingleton.Image.resolution
+                dy = dx*self.slope.slope
+                curr = self.start
+                iter = list()
+                while(curr.x <= self.stop.x): #checking y is redundant
+                    iter.append(curr)
+                    curr = geometry.Point(curr.x + dx, curr.y + dy)
+                return iter
+
+            def distance_between(self):
+                a = ImageSingleton.Image.resolution
+                b = ImageSingleton.Image.resolution*self.slope.slope
+                return sqrt(a**2 + b**2)
+
+        resolution = None   #Type: Float
+        coastline = None    #Type: Coastline
 
         def __init__(self):
             self.x_min = None
@@ -245,8 +268,9 @@ class ImageSingleton:
             points_input = utilities.csvToDictFunction(inputfiles.get(constants.CSVKEY))
             #determine area to process
             xvals, yvals = linearregression.linreg(points_input)
-            start, stop, coast_slope = linearregression.transform_coastline(xvals, yvals)
-            Node.slope = linearregression.perpendicular_slope(coast_slope, settings.dune_direction)
+            start, stop, slope = linearregression.transform_coastline(xvals, yvals)
+            self.coastline = ImageSingleton.Image.Coastline(start, stop, slope)
+            Node.slope = linearregression.perpendicular_slope(self.coastline[2], settings.dune_direction)
             Node.threshold = settings.threshold
             #complete the code above
             #process image pixels into nodes
