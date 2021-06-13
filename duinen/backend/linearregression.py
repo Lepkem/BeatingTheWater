@@ -2,6 +2,7 @@ from os import X_OK
 from typing import Tuple
 from . import geometry
 from sklearn.linear_model import LinearRegression
+import math
 
 def linreg(points: dict) -> Tuple[list, list]:
     """Returns arrays of respectively X and Y values"""
@@ -25,17 +26,20 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[geometry.Point, geome
 
     return PointA, PointB, SlopeXY
 
-def perpendicular_slope(coastline: geometry.Slope, dune_direction: geometry.Direction):
-    if(dune_direction == geometry.Direction.East):
-        #calculate the perpendicular slope in the east direction
-        pass
-    elif(dune_direction == geometry.Direction.West):
-        #calculate the perpendicular slope in the west direction
-        pass
-    elif(dune_direction == geometry.Direction.North):
-        #calculate the perpendicular slope in the north direction
-        pass
-    elif(dune_direction == geometry.Direction.South):
-        #calculate the perpendicular slope in the south direction
-        pass
-    
+
+def perpendicular_slope(coastline: geometry.Slope, dune_direction: int) -> geometry.Slope:
+    """returns the perpendicular slope of the input"""
+    if coastline.slope==0:
+        return geometry.Slope(0, 0)
+    elif dune_direction == geometry.Direction.East:
+        if coastline.x_progression==0:
+            return geometry.Slope(0, 1)
+        else:
+            return geometry.Slope(-coastline.slope**-1, 1)
+    elif dune_direction == geometry.Direction.West:
+        if coastline.x_progression==0:
+            return geometry.Slope(0, -1)
+        else:
+            return geometry.Slope(-coastline.slope**-1, 1)
+    else:
+        raise ValueError("no matching slope and direction values")
