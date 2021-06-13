@@ -247,6 +247,7 @@ class ImageSingleton:
 
         resolution = None   #Type: Float
         coastline = None    #Type: Coastline
+        meter_to_source_unit_conversion_factor = None
 
         def __init__(self):
             self.x_min = None
@@ -278,6 +279,9 @@ class ImageSingleton:
             #throws a bunch of non-fatal errors
             print("beforeqgis")
             rlayer = QgsRasterLayer(data_file, "H_2m_2019_Springertduinen")
+            crs = rlayer.crs()
+            source_unit = crs.mapUnits()
+            self.meter_to_source_unit_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(QgsUnitTypes.DistanceMeters, source_unit)
             print("afterqgis")
             #set up navigation dictionaries
             self._finish()

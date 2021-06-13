@@ -14,6 +14,9 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     processed_image = ImageSingleton.create()
     logging.debug(f'before populate call at {datetime.now()}')
     processed_image.populate(reqfiles, settings)
+    #refit user provided parameters into the distance units of the data file
+    settings.distance = settings.distance*processed_image.meter_to_source_unit_conversion_factor
+    settings.min_width = settings.distance*processed_image.meter_to_source_unit_conversion_factor
     logging.debug(f'after populate call at {datetime.now()}')
     logging.info(f'End of section "Image processing" at {datetime.now()}')
 
