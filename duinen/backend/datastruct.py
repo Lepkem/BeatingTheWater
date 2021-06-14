@@ -83,7 +83,16 @@ class Node:
         return self
 
     def get_neighbor(self, direction: int) -> Node:
-        raise NotImplementedError()
+        if direction == geometry.Direction.East:
+            return self._east
+        elif direction == geometry.Direction.North:
+            return self._north
+        elif direction == geometry.Direction.West:
+            return self._west
+        elif direction == geometry.Direction.South:
+            return self._south
+        else:
+            raise ValueError("Invalid direction")
 
     def _is_within(self, point : geometry.Point) -> bool:
         if(point.x < self.x_min or point.x > self.x_max):
@@ -177,7 +186,10 @@ class Node:
         if(self._notify is None):
             raise AttributeError("Notify callback function is not defined.")
         
-        northeast, northwest, southwest, southeast = False
+        northeast = False
+        northwest = False
+        southwest = False
+        southeast = False
         def subscribe(target : Node):
             target.subscribers.append(self._notify)
 
@@ -215,12 +227,17 @@ class Node:
                 southeast = True
     #TODO: replace slope arg by class attr
     def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float, float]:
-        if(not self._is_within(entry)):
-            raise ValueError("Entry point out of boundary.")
+        #TODO: Fix floating point inaccuracy
+        # if(not self._is_within(entry)):
+        #     xrange = (self.x_min, self.x_max)
+        #     yrange = (self.y_min, self.y_max)
+        #     entryxy = (entry.x, entry.y)
+        #     slope = Node.slope.slope
+        #     raise ValueError("Entry point out of boundary.")
         self._notify = self._notify_factory(route_id)
         if(self._rating == Rating.Strong):
             self._subscribe_neighbors()
-        out, next = self._calculate_out(entry, self.slope)
+        out, next = self._calculate_out(entry)
         distance = entry.distance(out)
         strongdistance = distance if self._rating == Rating.Strong else 0
         return next, out, distance, strongdistance
@@ -273,7 +290,7 @@ class ImageSingleton:
             #determine area to process
             xvals, yvals = linearregression.linreg(points_input)
             start, stop, slope = linearregression.transform_coastline(xvals, yvals)
-            self.coastline = ImageSingleton.Image.Coastline(start, stop, slope)
+            ImageSingleton.Image.coastline = ImageSingleton.Image.Coastline(start, stop, slope)
             Node.slope = linearregression.perpendicular_slope(self.coastline.slope, settings.dune_direction)
             Node.threshold = settings.threshold
             #complete the code above
@@ -285,8 +302,11 @@ class ImageSingleton:
             rlayer = QgsRasterLayer(temppath, "datafile")
             crs = rlayer.crs()
             source_unit = crs.mapUnits()
-            self.meter_to_source_unit_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(QgsUnitTypes.DistanceMeters, source_unit)
-
+            ImageSingleton.Image.meter_to_source_unit_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(QgsUnitTypes.DistanceMeters, source_unit)
+            if rlayer.rasterUnitsPerPixelY() == rlayer.rasterUnitsPerPixelX():
+                ImageSingleton.Image.resolution = rlayer.rasterUnitsPerPixelX()
+            else:
+                raise ValueError("The program only supports square pixels.")
             find_boundary = lambda refval, outerval, step, sign: refval - ((refval - outerval) % step)*sign
             corners = self._get_essential_area_corners(settings.distance)
             self.x_min = find_boundary(min([point.x for point in corners]), rlayer.extent().xMinimum(), rlayer.rasterUnitsPerPixelX(), 1)
@@ -303,14 +323,17 @@ class ImageSingleton:
                     newNode = Node(x, x + rlayer.rasterUnitsPerPixelX(), y, y + rlayer.rasterUnitsPerPixelY(), sample if success else 0)
                     if outer == 0:
                         self.northwest = newNode
-                        self.southwest = newNode
+                        if inner == 0:
+                            self.southwest = newNode
                     if inner == 0:
-                        if self.northeast is not None:
-                            newNode.link_neighbor(self.northeast, geometry.Direction.West)
-                        self.northeast = newNode
-                    elif self.southeast is not None:
-                        newNode.link_neighbor(self.southeast, geometry.Direction.North)
-                    self.southeast = newNode
+                        if self.southeast is not None:
+                            newNode.link_neighbor(self.southeast, geometry.Direction.West)
+                        self.southeast = newNode
+                    elif self.northeast is not None:
+                        newNode.link_neighbor(self.northeast, geometry.Direction.South)
+                        if outer != 0:
+                            newNode.link_neighbor(self.northeast.get_neighbor(geometry.Direction.West).get_neighbor(geometry.Direction.North), geometry.Direction.West)
+                    self.northeast = newNode
                     inner = 1
                 outer = 1
             #set up navigation dictionaries
@@ -322,11 +345,14 @@ class ImageSingleton:
             def closest(min: float, max: float, value: float) -> Tuple[float, float]:
                 mindist = abs(value - min)
                 maxdist = abs(max - value)
-                return min, mindist if mindist <= maxdist else max, maxdist
+                return (min, mindist) if mindist <= maxdist else (max, maxdist)
             startx, distx = closest(self.x_min, self.x_max, x)
             starty, disty = closest(self.y_min, self.y_max, y)
-
-            curr = self.cornerdict.get(startx, starty)
+            ###DEBUG###
+            #xvals = [p.x for p in self.cornerdict.keys()]
+            #yvals = [p.y for p in self.cornerdict.keys()]
+            ###\DEBUG###
+            curr = self.cornerdict(startx, starty)
             dirx, diry = self._directions.get(curr)
             while distx >= self.resolution:
                 curr = curr.get_neighbor(dirx)
@@ -342,8 +368,8 @@ class ImageSingleton:
             for pointA in [self.coastline.start, self.coastline.stop]:
                 points.append(pointA)
                 alfa = math.atan(abs(Node.slope.slope))
-                dx = math.acos(alfa)*distance*Node.slope.dx_sign()
-                dy = math.asin(alfa)*distance*Node.slope.dy_sign()
+                dx = math.cos(alfa)*distance*Node.slope.dx_sign()
+                dy = math.sin(alfa)*distance*Node.slope.dy_sign()
                 points.append(geometry.Point(pointA.x + dx, pointA.y + dy))
             return points
             
@@ -352,11 +378,28 @@ class ImageSingleton:
                 raise AttributeError("Can't read image while processing is not complete.")
         
         def _finish(self):
-            self.cornerdict[self.northeast.x_max, self.northeast.y_max] = self.northeast
-            self.cornerdict[self.northwest.x_min, self.northwest.y_max] = self.northwest
-            self.cornerdict[self.southwest.x_min, self.southwest.y_min] = self.southwest
-            self.cornerdict[self.southeast.x_max, self.southeast.y_min] = self.southeast
+            def make_dict_emulator():
+                def dict_emulator(x, y):
+                    if(x == self.x_min):
+                        if y == self.y_max:
+                            return self.northwest
+                        elif y == self.y_min:
+                            return self.southwest
+                        else:
+                            raise RuntimeError("Y dimension mismatch")
+                    elif(x == self.x_max):
+                        if y == self.y_max:
+                            return self.northeast
+                        elif y == self.y_min:
+                            return self.southeast
+                        else:
+                            raise RuntimeError("Y dimension mismatch")
+                    else:
+                        raise RuntimeError("X dimension mismatch")
+                return dict_emulator
 
+
+            self.cornerdict = make_dict_emulator()
             self._directions[self.northeast] = (geometry.Direction.West, geometry.Direction.South)
             self._directions[self.northwest] = (geometry.Direction.East, geometry.Direction.South)
             self._directions[self.southwest] = (geometry.Direction.East, geometry.Direction.North)

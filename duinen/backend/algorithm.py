@@ -1,4 +1,5 @@
-from .datastruct import ImageSingleton
+from duinen.backend.geometry import Direction
+from .datastruct import ImageSingleton, Node
 from .utilities import AlgorithmSettings
 from collections import deque
 import logging
@@ -17,8 +18,8 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     logging.debug(f'before populate call at {datetime.now()}')
     processed_image.populate(reqfiles, settings)
     #refit user provided parameters into the distance units of the data file
-    settings.distance = settings.distance*processed_image.meter_to_source_unit_conversion_factor
-    settings.min_width = settings.distance*processed_image.meter_to_source_unit_conversion_factor
+    settings.distance = settings.distance*ImageSingleton.Image.meter_to_source_unit_conversion_factor
+    settings.min_width = settings.distance*ImageSingleton.Image.meter_to_source_unit_conversion_factor
     logging.debug(f'after populate call at {datetime.now()}')
     logging.info(f'End of section "Image processing" at {datetime.now()}')
 
@@ -33,6 +34,16 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
         node = processed_image.seek(point.x, point.y)
         dist_cum = 0.0
         while dist_cum < settings.distance:
+            ###DEBUG###
+            # slope = Node.slope.slope
+            # xprog = Node.slope.x_progression
+            # north = node.get_neighbor(Direction.North)
+            # south = node.get_neighbor(Direction.South)
+            # west = node.get_neighbor(Direction.West)
+            # east = node.get_neighbor(Direction.East)
+            # north_neigh = [north.get_neighbor(x) for x in [Direction.East, Direction.South, Direction.West, Direction.North]]
+            # raise RuntimeError("DEBUG")
+            ###DEBUG
             node, point, dist, str_dist = node.route(point, route_id)
             dist_cum += dist
             notify_queue.append((node, route_id))

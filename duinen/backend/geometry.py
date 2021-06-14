@@ -30,7 +30,7 @@ class Slope:
 
     def dy_sign(self) -> int:
         #logical xor
-        if self.slope > 0 != self.x_progression < 0:
+        if (self.slope > 0) != (self.x_progression < 0):
             return 1
         else:
             return -1
@@ -49,3 +49,6 @@ class Point:
         if(not isinstance(other, Point)):
             return False
         return self.x == other.x and self.y == other.y
+
+    def __hash__(self):
+        return int(self.x * self.y)
