@@ -13,17 +13,18 @@ def home(request):
 
     # The Convert button is clicked
     if request.method == 'POST':
-        lengthFromDune = request.POST['LFD']
-        duneHeight = request.POST['HEIGHT']
-        duneLength = request.POST['LENGTH']
-        direction = request.POST['OW']
+        lengthFromDune = int(request.POST['LFD'])
+        duneHeight = int(request.POST['HEIGHT'])
+        duneLength = int(request.POST['LENGTH'])
+        direction = Direction.East if request.POST['OW'] == "Oost" else -1
+        direction = Direction.West if request.POST['OW'] == "West" else direction
         if 'csvdoc' in request.POST is None or 'tiffdoc' in request.POST:
             context['convertOutput'] = "You need to put in a csv file and tiff image"
         else:
             # Receiving the inputs from the POST request
             csvfile = request.FILES['csvdoc'] #deprecated
             tifffile = request.FILES['tiffdoc'] #deprecated
-            algosettings = AlgorithmSettings(300, 8, 30, Direction.East)
+            algosettings = AlgorithmSettings(lengthFromDune, duneHeight, duneLength, direction)
 
             algorithm.run(request.FILES, algosettings)
 
