@@ -1,15 +1,18 @@
+/* Reset margin padding and font family for all classes used */
 * {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
 }
 
+/* Set html styling */
 html {
   background-color: white;
   width: 100%;
   height: 100%;
 }
 
+/* Set body styling */
 body {
   width: 94%;
   min-height: 90vh;
@@ -31,6 +34,7 @@ body:hover {
   transform: scale(1.01)
 }
 
+/* Upload folder div including dune specs csv and tif classes */
 .uploadfolders {
   position: relative;
   float: left;
@@ -38,19 +42,37 @@ body:hover {
   height: 90vh;
 }
 
+/* set dune specifications styling */
 .dune_specs {
   position: relative;
-  float: right;
-  width: 30%;
-  margin-top: 45%;
+  float: left;
+  margin-left: 10%;
+  width: 32%;
+  min-height: 29vh;
+  margin-top: 10vh;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  padding: 4%;
+  border-radius: 1vh;
+  box-shadow: 5px 5px 0px 0px #289fed;
+  transition: transform 1s;
+  transform: scale(1);
+}
+
+.dune_specs:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05)
 }
 
 .dune_specs p{
   font-size: 100%;
   font-weight: bold;
+  text-align: center;
+  margin-top: 1.5vh;
 }
 
-
+/* Dune specifications How far to look */
 .input-number1 {
   width: 40%;
   vertical-align: top;
@@ -93,6 +115,7 @@ body:hover {
   border-radius: 0 4px 4px 0;
 }
 
+/* Dune specifications Height in M */
 .input-number2 {
   width: 40%;
   vertical-align: top;
@@ -123,6 +146,7 @@ body:hover {
   border-radius: 0 4px 4px 0;
 }
 
+/* Dune specifications Length in M */
 .input-number3 {
   width: 40%;
   vertical-align: top;
@@ -153,12 +177,14 @@ body:hover {
   border-radius: 0 4px 4px 0;
 }
 
+/* Dune specifications Oost of west*/
 .input-number4 {
   width: 70%;
   vertical-align: top;
   text-align: center;
   outline: none;
   border-radius: 0.5vh;
+  margin-left: 15%;
 }
 
 .input-number4,
@@ -184,99 +210,7 @@ body:hover {
   border-radius: 0 4px 4px 0;
 }
 
-.csv {
-  position: relative;
-  float: left;
-  width: 40%;
-  height: 35vh;
-  margin-top: 5vh;
-  margin-left: 25%;
-  background-color: white;
-  border-radius: 1vh;
-  -webkit-box-shadow: 5px 5px 0px 0px #289FED;
-  box-shadow: 5px 5px 0px 0px #289FED;
-  transition: transform 1s;
-  transform: scale(1)
-}
-
-.csv:hover {
-  filter: grayscale(0%);
-  transform: scale(1.05)
-}
-
-.csv h1 {
-  text-align: center;
-  margin-top: 7vh;
-  font-size: 2.5vh;
-}
-
-.csv p {
-  text-align: center;
-  font-size: 1.5vh;
-}
-
-.tif {
-  position: relative;
-  float: left;
-  width: 40%;
-  height: 35vh;
-  margin-top: 10vh;
-  margin-left: 25%;
-  background-color: white;
-  border-radius: 1vh;
-  -webkit-box-shadow: 5px 5px 0px 0px #289FED;
-  box-shadow: 5px 5px 0px 0px #289FED;
-  transition: transform 1s;
-  transform: scale(1)
-}
-
-.tif:hover {
-  filter: grayscale(0%);
-  transform: scale(1.05)
-}
-
-.tif h1 {
-  text-align: center;
-  margin-top: 7vh;
-  font-size: 2.5vh;
-}
-
-.tif p {
-  text-align: center;
-  font-size: 1.5vh;
-}
-
-.convertbutton {
-  position: relative;
-  float: left;
-  width: 10%;
-  height: 90vh;
-  cursor: pointer;
-
-}
-
-.convertbutton img {
-    float: right;
-    margin-top: 41.75vh;
-    height: 6.5vh;
-    width: auto;
-    transition: transform 1s;
-    filter: grayscale(70%);
-    transform: scale(1);
-}
-
-.convertbutton img:hover {
-  filter: grayscale(0%);
-  transform: scale(1.1);
-}
-
-.converted {
-  position: relative;
-  float: left;
-  width: 52.4%;
-  height: 100%;
-}
-
+/* Creating the file drop areas for both CSV and TIFF files */
 .file-drop-area {
   position: relative;
   display: flex;
@@ -312,6 +246,105 @@ body:hover {
   cursor: pointer;
   opacity: 0;
 }
+
+/* CSV upload box */
+.csv {
+  position: relative;
+  float: left;
+  width: 40%;
+  height: 35vh;
+  margin-top: 5vh;
+  margin-left: 10%;
+  background-color: white;
+  border-radius: 1vh;
+  -webkit-box-shadow: 5px 5px 0px 0px #289fed;
+  box-shadow: 5px 5px 0px 0px #289fed;
+  transition: transform 1s;
+  transform: scale(1);
+}
+
+.csv:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05)
+}
+
+.csv h1 {
+  text-align: center;
+  margin-top: 7vh;
+  font-size: 2.5vh;
+}
+
+.csv p {
+  text-align: center;
+  font-size: 1.5vh;
+}
+
+/* Tif upload box */
+.tif {
+  position: relative;
+  float: left;
+  width: 40%;
+  height: 35vh;
+  margin-top: 5vh;
+  margin-left: 10%;
+  background-color: white;
+  border-radius: 1vh;
+  -webkit-box-shadow: 5px 5px 0px 0px #289fed;
+  box-shadow: 5px 5px 0px 0px #289fed;
+  transition: transform 1s;
+  transform: scale(1);
+}
+
+.tif:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05)
+}
+
+.tif h1 {
+  text-align: center;
+  margin-top: 7vh;
+  font-size: 2.5vh;
+}
+
+.tif p {
+  text-align: center;
+  font-size: 1.5vh;
+}
+
+/* Convert button styling */
+.convertbutton {
+  position: relative;
+  float: left;
+  width: 10%;
+  height: 90vh;
+  cursor: pointer;
+
+}
+
+.convertbutton img {
+    float: right;
+    margin-top: 41.75vh;
+    height: 6.5vh;
+    width: auto;
+    transition: transform 1s;
+    filter: grayscale(70%);
+    transform: scale(1);
+}
+
+.convertbutton img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.1);
+}
+
+/*  */
+.converted {
+  position: relative;
+  float: left;
+  width: 52.4%;
+  height: 100%;
+}
+
+/* Error handling after converting styling */
 .converted .output {
   background-color: lightgreen;
   padding: 2%;
@@ -326,6 +359,11 @@ body:hover {
   box-shadow: 5px 5px 0px 0px white;
 }
 
+.converted .output:empty {
+  display: none;
+}
+
+/* Right side of the frontend */
 .converted .cimg {
   position: relative;
   width: 40%;
@@ -335,6 +373,7 @@ body:hover {
   margin-top: 5vh;
 }
 
+/* Old file */
 .converted .cimg img {
   width:100%;
   height:100%;
@@ -344,6 +383,7 @@ body:hover {
   box-shadow: 5px 5px 0px 0px white;
 }
 
+/* Old file converted (new file) */
 .converted .cimg2 {
   position: relative;
   width: 40%;
@@ -361,6 +401,7 @@ body:hover {
   box-shadow: 5px 5px 0px 0px #289FED;
 }
 
+/* Download button */
 .converted .cimg3 {
   position: relative;
   width: 8%;
@@ -381,4 +422,9 @@ body:hover {
 .converted .cimg3 img:hover {
   filter: grayscale(0%);
   transform: scale(1.1);
+}
+
+/* Quick fix for the centering of the dune specifications */
+span.input-number-decrement {
+    margin-left: 15%;
 }

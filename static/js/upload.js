@@ -1,3 +1,5 @@
+// Upload box drag script/function
+
 var $fileInput = $('.file-input');
 var $droparea = $('.file-drop-area');
 
@@ -26,10 +28,13 @@ $fileInput.on('change', function() {
   }
 });
 
+// counter 1 (dune specifications)
 (function() {
 
+  // take number
   window.inputNumber = function(el) {
 
+    // set variables and take min and max value
     var min = el.attr('min') || false;
     var max = el.attr('max') || false;
 
@@ -42,11 +47,16 @@ $fileInput.on('change', function() {
       init($(this));
     });
 
+    // function to allow increasing and decreasing
     function init(el) {
 
+      // increase number
       els.dec.on('click', decrement);
+
+      // decrease number
       els.inc.on('click', increment);
 
+      // function to decrease number by 1
       function decrement() {
         var value = el[0].value;
         value--;
@@ -55,6 +65,7 @@ $fileInput.on('change', function() {
         }
       }
 
+      // function to increase number by 1
       function increment() {
         var value = el[0].value;
         value++;
@@ -68,6 +79,7 @@ $fileInput.on('change', function() {
 
 inputNumber($('.input-number1'));
 
+// counter 2 (dune specifications)
 (function() {
 
   window.inputNumber = function(el) {
@@ -110,6 +122,7 @@ inputNumber($('.input-number1'));
 
 inputNumber($('.input-number2'));
 
+// counter 3 (dune specifications)
 (function() {
 
   window.inputNumber = function(el) {
@@ -152,6 +165,7 @@ inputNumber($('.input-number2'));
 
 inputNumber($('.input-number3'));
 
+// counter 4 (dune specifications) (optional)
 (function() {
 
   window.inputNumber = function(el) {
