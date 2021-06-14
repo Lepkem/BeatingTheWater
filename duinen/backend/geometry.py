@@ -25,6 +25,16 @@ class Slope:
     def dy(self, dx: float) -> float:
         return self.slope*dx
 
+    def dx_sign(self) -> int:
+        return 1 if self.x_progression > 0 else -1
+
+    def dy_sign(self) -> int:
+        #logical xor
+        if self.slope > 0 != self.x_progression < 0:
+            return 1
+        else:
+            return -1
+
 class Point:
     def __init__(self, x: float, y: float):
         self.x = x

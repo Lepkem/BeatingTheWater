@@ -1,7 +1,10 @@
 from __future__ import annotations
 import enum
 from math import sqrt
+import math
+import numpy as np
 from typing import Tuple
+import os, tempfile
 from .. import constants
 from qgis.core import *
 from . import geometry, utilities, linearregression
@@ -275,14 +278,41 @@ class ImageSingleton:
             Node.threshold = settings.threshold
             #complete the code above
             #process image pixels into nodes
-            data_file = "C:\\Users\\Alexander\\Desktop\\ProjectD_Data\\SpringertduinenAHNhoogdynamisch\\H_2m_2019_Springertduinen.tif"
-            #throws a bunch of non-fatal errors
-            print("beforeqgis")
-            rlayer = QgsRasterLayer(data_file, "H_2m_2019_Springertduinen")
+            #TODO: replace hardcoded file path
+            #data_file = "C:\\Users\\Alexander\\Desktop\\ProjectD_Data\\SpringertduinenAHNhoogdynamisch\\H_2m_2019_Springertduinen.tif"
+            #TODO: throws a bunch of non-fatal errors
+            temppath = inputfiles[constants.DATAKEY].temporary_file_path()
+            rlayer = QgsRasterLayer(temppath, "datafile")
             crs = rlayer.crs()
             source_unit = crs.mapUnits()
             self.meter_to_source_unit_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(QgsUnitTypes.DistanceMeters, source_unit)
-            print("afterqgis")
+
+            find_boundary = lambda refval, outerval, step, sign: refval - ((refval - outerval) % step)*sign
+            corners = self._get_essential_area_corners(settings.distance)
+            self.x_min = find_boundary(min([point.x for point in corners]), rlayer.extent().xMinimum(), rlayer.rasterUnitsPerPixelX(), 1)
+            self.x_max = find_boundary(max([point.x for point in corners]), rlayer.extent().xMaximum(), rlayer.rasterUnitsPerPixelX(), -1)
+            self.y_min = find_boundary(min([point.y for point in corners]), rlayer.extent().yMinimum(), rlayer.rasterUnitsPerPixelY(), 1)
+            self.y_max = find_boundary(max([point.y for point in corners]), rlayer.extent().yMaximum(), rlayer.rasterUnitsPerPixelY(), -1)
+
+            #TODO: Link neighbor nodes
+            outer = 0
+            for x in np.arange(self.x_min, self.x_max, rlayer.rasterUnitsPerPixelX()):
+                inner = 0
+                for y in np.arange(self.y_min, self.y_max, rlayer.rasterUnitsPerPixelY()):
+                    sample, success = rlayer.dataProvider().sample(QgsPointXY(x + rlayer.rasterUnitsPerPixelX()/2, y + rlayer.rasterUnitsPerPixelY()/2), 1)
+                    newNode = Node(x, x + rlayer.rasterUnitsPerPixelX(), y, y + rlayer.rasterUnitsPerPixelY(), sample if success else 0)
+                    if outer == 0:
+                        self.northwest = newNode
+                        self.southwest = newNode
+                    if inner == 0:
+                        if self.northeast is not None:
+                            newNode.link_neighbor(self.northeast, geometry.Direction.West)
+                        self.northeast = newNode
+                    elif self.southeast is not None:
+                        newNode.link_neighbor(self.southeast, geometry.Direction.North)
+                    self.southeast = newNode
+                    inner = 1
+                outer = 1
             #set up navigation dictionaries
             self._finish()
 
@@ -296,7 +326,7 @@ class ImageSingleton:
             startx, distx = closest(self.x_min, self.x_max, x)
             starty, disty = closest(self.y_min, self.y_max, y)
 
-            curr = self.cornerdict.get(geometry.Point(startx, starty))
+            curr = self.cornerdict.get(startx, starty)
             dirx, diry = self._directions.get(curr)
             while distx >= self.resolution:
                 curr = curr.get_neighbor(dirx)
@@ -306,16 +336,26 @@ class ImageSingleton:
                 disty -= self.resolution
 
             return curr
+
+        def _get_essential_area_corners(self, distance: float) -> list[geometry.Point]:
+            points = list()
+            for pointA in [self.coastline.start, self.coastline.stop]:
+                points.append(pointA)
+                alfa = math.atan(abs(Node.slope.slope))
+                dx = math.acos(alfa)*distance*Node.slope.dx_sign()
+                dy = math.asin(alfa)*distance*Node.slope.dy_sign()
+                points.append(geometry.Point(pointA.x + dx, pointA.y + dy))
+            return points
             
         def _checkComplete(self):
             if not self.complete:
                 raise AttributeError("Can't read image while processing is not complete.")
         
         def _finish(self):
-            self.cornerdict[geometry.Point(self.northeast.x_max, self.northeast.y_max)] = self.northeast
-            self.cornerdict[geometry.Point(self.northwest.x_min, self.northwest.y_max)] = self.northwest
-            self.cornerdict[geometry.Point(self.southwest.x_min, self.southwest.y_min)] = self.southwest
-            self.cornerdict[geometry.Point(self.southeast.x_max, self.southeast.y_min)] = self.southeast
+            self.cornerdict[self.northeast.x_max, self.northeast.y_max] = self.northeast
+            self.cornerdict[self.northwest.x_min, self.northwest.y_max] = self.northwest
+            self.cornerdict[self.southwest.x_min, self.southwest.y_min] = self.southwest
+            self.cornerdict[self.southeast.x_max, self.southeast.y_min] = self.southeast
 
             self._directions[self.northeast] = (geometry.Direction.West, geometry.Direction.South)
             self._directions[self.northwest] = (geometry.Direction.East, geometry.Direction.South)
