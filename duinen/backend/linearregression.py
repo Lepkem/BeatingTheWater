@@ -25,7 +25,7 @@ def transform_coastline(x_arr: list, y_arr: list) -> Tuple[geometry.Point, geome
 
     return PointA, PointB, SlopeXY
 
-
+#source https://tutors.com/math-tutors/geometry-help/perpendicular-slope
 def perpendicular_slope(coastline: geometry.Slope, dune_direction: int) -> geometry.Slope:
     """returns the perpendicular slope of the input"""
     if coastline.slope==0:
