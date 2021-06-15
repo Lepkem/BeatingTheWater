@@ -35,18 +35,19 @@ def render(image: ImageSingleton.Image, source_filepath: str):
     renderlayer.GetRasterBand(1).WriteArray(pixelband)
     #TODO: render colors
     color_conf = os.path.join(os.path.dirname(__file__), 'color_conf.txt')
-    from qgis.analysis import QgsNativeAlgorithms
-    QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
-    prints = list()
-    for alg in QgsApplication.processingRegistry().algorithms():
-        prints.append(alg.id() + "->" + alg.displayName())
-    processing.run("gdal:colorrelief", {'INPUT': renderlayer,
+
+    from processing.core.Processing import Processing
+    Processing.initialize()
+    # prints = list()
+    # for alg in QgsApplication.processingRegistry().algorithms():
+    #     prints.append(alg.id() + "->" + alg.displayName())
+    processing.run("gdal:colorrelief", {'INPUT': source_filepath,
         'BAND': 1,
         'COMPUTE_EDGES': False,
         'COLOR_TABLE': color_conf,
         'MATCH_MODE:': 0,
         'OPTIONS' : "",
-        'OUTPUT' : renderlayer
+        'OUTPUT' : target_path
     })
     #TODO: save output file and return it
 
