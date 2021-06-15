@@ -11,10 +11,9 @@ from qgis.core import *
 from . import geometry, utilities, linearregression
 
 class Rating(enum.Enum):
-    Weak = 0
-    StrongNoOverlap = 1
-    Strong = 2
-    Visited = 3
+    Weak = 1
+    StrongNoOverlap = 2
+    Strong = 3
 
 class Node:
     threshold = None
@@ -34,6 +33,7 @@ class Node:
         self._north = None
         self._east = None
         self._south = None
+        self.visited = False
 
         self._rating = Rating.Strong if (height >= self.threshold) else Rating.Weak
         self.subscribers = list()
@@ -240,6 +240,7 @@ class Node:
         #     slope = Node.slope.slope
         #     raise ValueError("Entry point out of boundary.")
         if route_id != -1:
+            self.visited = True
             self._notify = self._notify_factory(route_id)
             if(self._rating == Rating.Strong):
                 self._subscribe_neighbors()

@@ -30,30 +30,29 @@ def render(image: ImageSingleton.Image, source_filepath: str):
     for column in range(xoffs, xmaxoffs):
         for row in range(yoffs, ymaxoffs):
             #rating = image.seek(xpointer, ypointer)._rating.value
-            pixelband[row][column] = image.seek(xpointer, ypointer)._rating.value
+            node = image.seek(xpointer, ypointer)
+            pixelband[row][column] = node._rating.value if node.visited else 0
             ypointer -= ImageSingleton.Image.resolution
         xpointer += ImageSingleton.Image.resolution
         ypointer = image.y_max
     renderlayer.GetRasterBand(1).WriteArray(pixelband)
 
-    # return
-
+def colortif():
     #TODO: render colors
     color_conf = os.path.join(os.path.dirname(__file__), 'color_conf.txt')
-
-    import time
-    time.sleep(60)
+    inputtif = os.path.join(os.path.dirname(__file__), 'output.tif')
+    outputtif = os.path.join(os.path.dirname(__file__), 'output2.tif')
     from processing.core.Processing import Processing
     Processing.initialize()
 
-    processing.run("gdal:colorrelief", {'INPUT': 'duinen/backend/output.tif',
+    processing.run("gdal:colorrelief", {'INPUT': inputtif,
     'BAND':1,
     'COMPUTE_EDGES':False,
     'COLOR_TABLE':color_conf,
     'MATCH_MODE':1,
     'OPTIONS':'',
     'EXTRA':'',
-    'OUTPUT':'static/TIF/newoutput2.tif'})
+    'OUTPUT':outputtif})
     #TODO: save output file and return it
 
 def find_offset_xy(xmin: float, ymin: float, xtarget:float, ytarget: float, resolution: float) -> Tuple[float, float]:
