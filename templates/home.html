@@ -32,7 +32,7 @@
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
             <span class="file-msg">or drag and drop files here</span>
-            <input class="file-input" type="file" name="csvdoc"  accept=".csv">
+            <input class="file-input" type="file" name="csvdoc"  accept=".csv" required>
           </div>
         </div>
 
@@ -47,7 +47,7 @@
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
             <span class="file-msg">or drag and drop files here</span>
-            <input class="file-input" type="file" name="tiffdoc" accept=".tiff,.tif">
+            <input class="file-input" type="file" name="tiffdoc" accept=".tiff,.tif" required>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
           </div>
           <div class="number">
             <p>OOST OF WEST</p>
-            <input class="input-number4" type="text" name="OW" list="directions">
+            <input class="input-number4" type="text" name="OW" list="directions" required>
             <datalist id="directions">
               <option>Oost</option>
               <option>West</option>
