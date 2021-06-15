@@ -14,7 +14,8 @@ QgsApplication.initQgis()
 
 def run(reqfiles: dict, settings: AlgorithmSettings):
     log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')
-    logging.basicConfig(filename=log_relative_path, level=logging.DEBUG)
+    logging.basicConfig(filename=log_relative_path, level=logging.INFO)
+    logging.info(f'Running algorithm with settings: distance={settings.distance}, threshold={settings.threshold}, minwidth={settings.min_width}, direction={settings.dune_direction}')
 
     #Image processing
     logging.info(f'Start of section "Image processing" at {datetime.now()}')
@@ -25,7 +26,9 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     processed_image.populate(reqfiles, settings)
     #refit user provided parameters into the distance units of the data file
     settings.distance = settings.distance*ImageSingleton.Image.meter_to_source_unit_conversion_factor
-    settings.min_width = settings.distance*ImageSingleton.Image.meter_to_source_unit_conversion_factor
+    settings.min_width = settings.min_width*ImageSingleton.Image.meter_to_source_unit_conversion_factor
+    logging.info(f'conversion factor: {ImageSingleton.Image.meter_to_source_unit_conversion_factor}')
+    logging.info(f'dist={settings.distance}, minwidth={settings.min_width}')
     logging.debug(f'after populate call at {datetime.now()}')
     logging.info(f'End of section "Image processing" at {datetime.now()}')
 
@@ -67,7 +70,7 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
 
     #stage 3: Traverse the image and determine the highest width of strong dunes per path
     logging.info(f'Start of subsection "Stage 3" at {datetime.now()}')
-    strongwidths = dict()
+    #strongwidths = dict()
     for point in processed_image.coastline.iterable():
         node = processed_image.seek(point.x, point.y)
         currnode = node
@@ -80,7 +83,8 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
             str_dist_cum = (str_dist_cum + str_dist) if str_dist > 0 else 0
             if str_dist_cum > max_dist_cum:
                 max_dist_cum = str_dist_cum
-        strongwidths[node] = str_dist_cum
+            #logging.info(f'maxstr={max_dist_cum}, strcum={str_dist_cum}, strdist={str_dist}, minwidth={settings.min_width}, issafe={max_dist_cum >= settings.min_width}')
+        #strongwidths[node] = str_dist_cum
     logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
 
     #end of algorithm
