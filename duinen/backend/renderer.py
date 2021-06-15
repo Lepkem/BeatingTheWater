@@ -35,23 +35,25 @@ def render(image: ImageSingleton.Image, source_filepath: str):
         xpointer += ImageSingleton.Image.resolution
         ypointer = image.y_max
     renderlayer.GetRasterBand(1).WriteArray(pixelband)
-    return
+
+    # return
+
     #TODO: render colors
     color_conf = os.path.join(os.path.dirname(__file__), 'color_conf.txt')
 
+    import time
+    time.sleep(60)
     from processing.core.Processing import Processing
     Processing.initialize()
-    # prints = list()
-    # for alg in QgsApplication.processingRegistry().algorithms():
-    #     prints.append(alg.id() + "->" + alg.displayName())
-    processing.run("gdal:colorrelief", {'INPUT': source_filepath,
-        'BAND': 1,
-        'COMPUTE_EDGES': False,
-        'COLOR_TABLE': color_conf,
-        'MATCH_MODE:': 0,
-        'OPTIONS' : "",
-        'OUTPUT' : target_path
-    })
+
+    processing.run("gdal:colorrelief", {'INPUT': 'duinen/backend/output.tif',
+    'BAND':1,
+    'COMPUTE_EDGES':False,
+    'COLOR_TABLE':color_conf,
+    'MATCH_MODE':1,
+    'OPTIONS':'',
+    'EXTRA':'',
+    'OUTPUT':'static/TIF/newoutput2.tif'})
     #TODO: save output file and return it
 
 def find_offset_xy(xmin: float, ymin: float, xtarget:float, ytarget: float, resolution: float) -> Tuple[float, float]:
