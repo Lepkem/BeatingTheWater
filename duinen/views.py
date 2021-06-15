@@ -14,7 +14,7 @@ from .backend.topng import removeoldpng
 
 def home(request):
     template = "home.html"
-    context = {}
+    context = {'downloadable':False}
 
     # Remove loaded pngs
     removeoldpng()
@@ -29,6 +29,7 @@ def home(request):
         if 'csvdoc' in request.POST is None or 'tiffdoc' in request.POST:
             context['convertOutput'] = "You need to put in a csv file and tiff image"
         else:
+            context['downloadable'] = True
             # Receiving the inputs from the POST request
             csvfile = request.FILES['csvdoc'] #deprecated
             tifffile = request.FILES['tiffdoc'] #deprecated

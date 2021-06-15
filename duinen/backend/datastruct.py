@@ -1,5 +1,6 @@
 from __future__ import annotations
 import enum
+import logging
 from math import sqrt
 import math
 import numpy as np
@@ -10,9 +11,10 @@ from qgis.core import *
 from . import geometry, utilities, linearregression
 
 class Rating(enum.Enum):
-    Weak = 0
-    StrongNoOverlap = 1
-    Strong = 2
+    Weak = 1
+    StrongNoOverlap = 2
+    Strong = 3
+    Safe = 4
 
 class Node:
     threshold = None
@@ -32,22 +34,27 @@ class Node:
         self._north = None
         self._east = None
         self._south = None
+        self.visited = False
+        self.safe = False
 
         self._rating = Rating.Strong if (height >= self.threshold) else Rating.Weak
         self.subscribers = list()
         self._notify = None
 
     def _downgrade_rating(self):
-        if self._rating == 2:
+        logging.debug(f'downgrade_rating func at {self}, rating before: {self._rating} strong: {self._rating == Rating.Strong}')
+        if self._rating == Rating.Strong:
             self._rating = Rating.StrongNoOverlap
 
     def _notify_factory(self, this_route_id : int) -> function:
         def notify(route_id : int, rating : int):
+            logging.debug(f'generated notify function at {self} with params: thisroute={this_route_id}, route={route_id}, rating={rating}')
             if this_route_id != route_id and rating == Rating.Weak:
                 self._downgrade_rating()
         return notify
 
     def notify(self, route_id : int):
+        logging.debug(f'notify function at {self} with rating: {self._rating} for subscribers: {self.subscribers}')
         if(self._rating == Rating.Weak):
             for callback in self.subscribers:
                 callback(route_id, self._rating)
@@ -226,7 +233,7 @@ class Node:
                 subscribe(self._south._east)
                 southeast = True
     #TODO: replace slope arg by class attr
-    def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float, float]:
+    def route(self, entry : geometry.Point, route_id : int, issafe: bool) -> Tuple[Node, geometry.Point, float, float]:
         #TODO: Fix floating point inaccuracy
         # if(not self._is_within(entry)):
         #     xrange = (self.x_min, self.x_max)
@@ -234,9 +241,13 @@ class Node:
         #     entryxy = (entry.x, entry.y)
         #     slope = Node.slope.slope
         #     raise ValueError("Entry point out of boundary.")
-        self._notify = self._notify_factory(route_id)
-        if(self._rating == Rating.Strong):
-            self._subscribe_neighbors()
+        if route_id != -1:
+            self.visited = True
+            self._notify = self._notify_factory(route_id)
+            if(self._rating == Rating.Strong):
+                self._subscribe_neighbors()
+        elif issafe:
+            self._rating = Rating.Safe
         out, next = self._calculate_out(entry)
         distance = entry.distance(out)
         strongdistance = distance if self._rating == Rating.Strong else 0
@@ -251,8 +262,34 @@ class ImageSingleton:
                 self.slope = slope
 
             def iterable(self) -> list:
-                dx = ImageSingleton.Image.resolution
-                dy = dx*self.slope.slope
+                xdiff = self.stop.x - self.start.x
+                dx = None
+                dy = None
+                if xdiff > 0:
+                    if self.slope.slope > 1 or self.slope.slope < -1:
+                        #dy is the determining factor
+                        dy = ImageSingleton.Image.resolution if self.slope.slope > 0 else -ImageSingleton.Image.resolution
+                        dx = dy/self.slope.slope
+                        pass
+                    else:
+                        #dx is the determining factor
+                        dx = ImageSingleton.Image.resolution
+                        dy = dx*self.slope.slope
+                        pass
+                elif xdiff < 0:
+                    if self.slope.slope > 1 or self.slope.slope < -1:
+                        #dy is the determining factor
+                        dy = ImageSingleton.Image.resolution if self.slope.slope > 0 else -ImageSingleton.Image.resolution
+                        dx = -(dy/self.slope.slope)
+                        pass
+                    else:
+                        #dx is the determining factor
+                        dx = -ImageSingleton.Image.resolution
+                        dy = dx*self.slope.slope
+                        pass
+                else:
+                    dx = 0
+                    dy = ImageSingleton.Image.resolution if self.slope.slope > 0 else -ImageSingleton.Image.resolution
                 curr = self.start
                 iter = list()
                 while(curr.x <= self.stop.x): #checking y is redundant
