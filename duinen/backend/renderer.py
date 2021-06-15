@@ -1,7 +1,7 @@
 from typing import Tuple
 import gdal
 import os
-from .datastruct import ImageSingleton
+from .datastruct import ImageSingleton, Rating
 from qgis.core import *
 import sys
 sys.path.append('C:\\OSGeo4W64\\apps\\qgis\\python\\plugins')

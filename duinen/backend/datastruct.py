@@ -14,6 +14,7 @@ class Rating(enum.Enum):
     Weak = 1
     StrongNoOverlap = 2
     Strong = 3
+    Safe = 4
 
 class Node:
     threshold = None
@@ -34,6 +35,7 @@ class Node:
         self._east = None
         self._south = None
         self.visited = False
+        self.safe = False
 
         self._rating = Rating.Strong if (height >= self.threshold) else Rating.Weak
         self.subscribers = list()
@@ -231,7 +233,7 @@ class Node:
                 subscribe(self._south._east)
                 southeast = True
     #TODO: replace slope arg by class attr
-    def route(self, entry : geometry.Point, route_id : int) -> Tuple[Node, geometry.Point, float, float]:
+    def route(self, entry : geometry.Point, route_id : int, issafe: bool) -> Tuple[Node, geometry.Point, float, float]:
         #TODO: Fix floating point inaccuracy
         # if(not self._is_within(entry)):
         #     xrange = (self.x_min, self.x_max)
@@ -244,6 +246,8 @@ class Node:
             self._notify = self._notify_factory(route_id)
             if(self._rating == Rating.Strong):
                 self._subscribe_neighbors()
+        elif issafe:
+            self._rating = Rating.Safe
         out, next = self._calculate_out(entry)
         distance = entry.distance(out)
         strongdistance = distance if self._rating == Rating.Strong else 0
