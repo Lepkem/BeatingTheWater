@@ -1,6 +1,8 @@
 from duinen.backend.geometry import Direction
 from .datastruct import ImageSingleton, Node
 from .utilities import AlgorithmSettings
+from .renderer import render
+from .. import constants
 from collections import deque
 import logging
 import os
@@ -80,6 +82,7 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     logging.info(f'Start of section "Render" at {datetime.now()}')
 
     #TODO: Implement rendering
+    render(processed_image, reqfiles[constants.DATAKEY].temporary_file_path())
 
     logging.info(f'End of section "Render" at {datetime.now()}')
 
