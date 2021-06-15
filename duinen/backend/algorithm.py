@@ -50,7 +50,7 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
             # north_neigh = [north.get_neighbor(x) for x in [Direction.East, Direction.South, Direction.West, Direction.North]]
             # raise RuntimeError("DEBUG")
             ###DEBUG
-            node, point, dist, str_dist = node.route(point, route_id)
+            node, point, dist, str_dist = node.route(point, route_id, False)
             dist_cum += dist
             notify_queue.append((node, route_id))
         #logging.debug(f'Route {route_id} completed')
@@ -67,19 +67,21 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
 
     #stage 3: Traverse the image and determine the highest width of strong dunes per path
     logging.info(f'Start of subsection "Stage 3" at {datetime.now()}')
-    if False:
-        strongwidths = dict()
-        for point in processed_image.coastline.iterable():
-            node = processed_image.seek(point.x, point.y)
-            currnode = node
-            dist_cum = 0.0
-            str_dist_cum = 0.0
-            while dist_cum < settings.distance:
-                currnode, point, dist, str_dist = currnode.route(point, -1)
-                dist_cum += dist
-                str_dist_cum += str_dist
-            strongwidths[node] = str_dist_cum
-        logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
+    strongwidths = dict()
+    for point in processed_image.coastline.iterable():
+        node = processed_image.seek(point.x, point.y)
+        currnode = node
+        dist_cum = 0.0
+        str_dist_cum = 0.0
+        max_dist_cum = 0.0
+        while dist_cum < settings.distance:
+            currnode, point, dist, str_dist = currnode.route(point, -1, max_dist_cum >= settings.min_width)
+            dist_cum += dist
+            str_dist_cum = (str_dist_cum + str_dist) if str_dist > 0 else 0
+            if str_dist_cum > max_dist_cum:
+                max_dist_cum = str_dist_cum
+        strongwidths[node] = str_dist_cum
+    logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
 
     #end of algorithm
     logging.info(f'End of section "Algorithm" at {datetime.now()}')
