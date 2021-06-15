@@ -94,17 +94,17 @@
 
       <!-- Non converted tiff file -->
       <div class="cimg">
-        <img src="{% static 'images/temp.png' %}" alt="folder" width="20%" height="auto">
+        <img src="{% static 'outputdata/tiffToPng.png' %}" alt="folder" width="20%" height="auto" onerror="this.src='{% static 'images/dune.jpg' %}'">
       </div>
 
       <!-- Converted tiff file -->
       <div class="cimg2">
-        <img src="{% static 'images/temp.png' %}" alt="folder" width="20%" height="auto">
+        <img src="{% static 'outputdata/converted.png' %}" alt="folder" width="20%" height="auto" onerror="this.src='{% static 'images/dune.jpg' %}'">
       </div>
 
       <!-- download button -->
       <div class="cimg3">
-        <a href="{% static 'images/temp.png' %}" download>
+        <a href="{% static 'outputdata/converted.png' %}" download>
           <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
         </a>
       </div>

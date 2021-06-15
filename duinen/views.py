@@ -1,4 +1,7 @@
-import csv
+import csv, os
+from django.shortcuts import render
+from django.template.response import TemplateResponse
+from PIL import Image
 from duinen.backend.geometry import Direction
 from duinen.backend.utilities import AlgorithmSettings
 from django.shortcuts import render
@@ -6,10 +9,15 @@ from django.template.response import TemplateResponse
 from .backend.datastruct import ImageSingleton
 from .backend.algorithm import run
 from duinen.backend import algorithm
+from duinen.backend import topng
+from .backend.topng import removeoldpng
 
 def home(request):
     template = "home.html"
     context = {}
+
+    # Remove loaded pngs
+    removeoldpng()
 
     # The Convert button is clicked
     if request.method == 'POST':
@@ -31,9 +39,8 @@ def home(request):
             # Turning the csv into a dict
             csvToDict = csvToDictFunction(csvfile)
 
-            # Passing the data to template (The data below here should later be replaced by the algoritm's output: a tiff image and download button)
-            context['convertOutput'] = csvToDict.__str__() + tifffile.name
-
+            # Set pngs ready for download
+            topng.convert(request)
 
     return render(request, template, context)
 

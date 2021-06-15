@@ -66,7 +66,7 @@ body:hover {
 }
 
 .dune_specs p{
-  font-size: 100%;
+  font-size: 1.5vh;
   font-weight: bold;
   text-align: center;
   margin-top: 1.5vh;
@@ -86,7 +86,7 @@ body:hover {
   border: 1px solid #ccc;
   height: 4vh;
   user-select: none;
-  font-size: 100%;
+  font-size: 1.5vh;
 }
 
 .input-number-decrement,
@@ -129,7 +129,7 @@ body:hover {
   border: 1px solid #ccc;
   height: 4vh;
   user-select: none;
-  font-size: 100%;
+  font-size: 1.5vh;
 }
 .input-number-decrement:active,
 .input-number-increment:active {
@@ -160,7 +160,7 @@ body:hover {
   border: 1px solid #ccc;
   height: 4vh;
   user-select: none;
-  font-size: 100%;
+  font-size: 1.5vh;
 }
 .input-number-decrement:active,
 .input-number-increment:active {
@@ -193,7 +193,7 @@ body:hover {
   border: 1px solid #ccc;
   height: 4vh;
   user-select: none;
-  font-size: 100%;
+  font-size: 1.5vh;
 }
 .input-number-decrement:active,
 .input-number-increment:active {
@@ -424,7 +424,7 @@ body:hover {
   transform: scale(1.1);
 }
 
-/* Quick fix for the centering of the dune specifications */
+/* Quick fix for the centering of the dune specifications and font sizes */
 span.input-number-decrement {
     margin-left: 15%;
 }

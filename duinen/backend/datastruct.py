@@ -46,7 +46,7 @@ class Node:
             if this_route_id != route_id and rating == Rating.Weak:
                 self._downgrade_rating()
         return notify
-    
+
     def notify(self, route_id : int):
         if(self._rating == Rating.Weak):
             for callback in self.subscribers:
@@ -185,7 +185,7 @@ class Node:
     def _subscribe_neighbors(self):
         if(self._notify is None):
             raise AttributeError("Notify callback function is not defined.")
-        
+
         northeast = False
         northwest = False
         southwest = False
@@ -372,11 +372,11 @@ class ImageSingleton:
                 dy = math.sin(alfa)*distance*Node.slope.dy_sign()
                 points.append(geometry.Point(pointA.x + dx, pointA.y + dy))
             return points
-            
+
         def _checkComplete(self):
             if not self.complete:
                 raise AttributeError("Can't read image while processing is not complete.")
-        
+
         def _finish(self):
             def make_dict_emulator():
                 def dict_emulator(x, y):
@@ -432,4 +432,3 @@ class ImageSingleton:
     @staticmethod
     def dispose():
         ImageSingleton._instance = None
-
