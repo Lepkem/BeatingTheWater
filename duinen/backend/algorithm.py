@@ -7,6 +7,10 @@ from collections import deque
 import logging
 import os
 from datetime import datetime
+from qgis.core import *
+qgs = QgsApplication([], False)
+QgsApplication.setPrefixPath("C:\\OSGeo4W64\\apps\\qgis", True)
+QgsApplication.initQgis()
 
 def run(reqfiles: dict, settings: AlgorithmSettings):
     log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')

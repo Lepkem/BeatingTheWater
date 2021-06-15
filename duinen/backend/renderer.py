@@ -33,6 +33,7 @@ def render(image: ImageSingleton.Image, source_filepath: str):
         xpointer += ImageSingleton.Image.resolution
         ypointer = image.y_min
     renderlayer.GetRasterBand(1).WriteArray(pixelband)
+    return
     #TODO: render colors
     color_conf = os.path.join(os.path.dirname(__file__), 'color_conf.txt')
 
