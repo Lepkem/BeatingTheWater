@@ -8,6 +8,11 @@ import logging
 import os
 from datetime import datetime
 from qgis.core import *
+
+from .topng import cout
+from shutil import copyfile
+
+
 qgs = QgsApplication([], False)
 QgsApplication.setPrefixPath("C:\\OSGeo4W64\\apps\\qgis", True)
 QgsApplication.initQgis()
@@ -59,7 +64,7 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
         #logging.debug(f'Route {route_id} completed')
         route_id += 1
     logging.info(f'End of subsection "Stage 1" at {datetime.now()}')
-            
+
     #stage 2: Traverse the image and trigger callback functions
     logging.info(f'Start of subsection "Stage 2" at {datetime.now()}')
     while len(notify_queue) > 0:
@@ -96,6 +101,8 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     #TODO: Implement rendering
     render(processed_image, reqfiles[constants.DATAKEY].temporary_file_path())
     colortif()
+    cout()
+    copyfile(os.path.join(os.path.dirname(__file__), 'output2.tif'), 'static/outputdata/converted.tif')
 
     logging.info(f'End of section "Render" at {datetime.now()}')
 

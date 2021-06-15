@@ -103,19 +103,12 @@
       </div>
 
       <!-- download button that downloads nothing if 2 inputs aren't given-->
-      {% if downloadable %}
+
       <div class="cimg3">
-        <a href="{% static 'outputdata/converted.png' %}" download>
+        <a href="{% static 'outputdata/converted.tif' %}" download>
           <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
         </a>
       </div>
-      {% else %}
-      <div class="cimg3">
-        <a href="">
-          <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
-        </a>
-      </div>
-      {% endif %}
     </div>
 
     <!-- Script to load jquery -->

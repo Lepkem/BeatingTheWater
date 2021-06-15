@@ -14,7 +14,6 @@ def convert(request):
             context['convertOutput'] = "You need to put in a csv file and tiff image"
         else:
             # Receiving the inputs from the POST request
-            csvfile = request.FILES['csvdoc'] #deprecated
             tifffile = request.FILES['tiffdoc'] #deprecated
 
             # Passing the data to template (The data below here should later be replaced by the algoritm's output: a tiff image and download button)
@@ -22,6 +21,19 @@ def convert(request):
             tiffImage = tiffImage.convert('RGB')
             tiffImage.save("./static/outputdata/tiffToPng.png", "PNG")
             # raise Exception("Sorry, no numbers below zero")
+
 def removeoldpng():
     if os.path.exists("./static/outputdata/tiffToPng.png"):
         os.remove("./static/outputdata/tiffToPng.png")
+def cout():
+    rout()
+
+    # Passing the data to template (The data below here should later be replaced by the algoritm's output: a tiff image and download button)
+    tiffImage = Image.open(os.path.join(os.path.dirname(__file__), 'output2.tif'))
+    tiffImage = tiffImage.convert('RGB')
+    tiffImage.save("./static/outputdata/converted.png", "PNG")
+    # raise Exception("Sorry, no numbers below zero")
+
+def rout():
+    if os.path.exists("./static/outputdata/converted.png"):
+        os.remove("./static/outputdata/converted.png")
