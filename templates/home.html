@@ -24,14 +24,14 @@
         <!-- CSV upload box -->
         <div class="csv">
           <h1>
-            Upload your file
+            UPLOAD YOUR FILE
           </h1>
           <p>
-            File should be .csv
+            FILE SHOULD BE .CSV
           </p>
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
-            <span class="file-msg">or drag and drop files here</span>
+            <span class="file-msg">OR DRAG AND DROP FILES HERE</span>
             <input class="file-input" type="file" name="csvdoc"  accept=".csv" required>
           </div>
         </div>
@@ -39,14 +39,14 @@
         <!-- TIF/TIFF upload box -->
         <div class="tif">
           <h1>
-            Upload your file
+            UPLOAD YOUR FILE
           </h1>
           <p>
-            File should be .tif or .tiff
+            FILE SHOULD BE .TIF
           </p>
           <div class="file-drop-area">
             <img src="{% static 'images/folder.png' %}" alt="folder" width="20%" height="auto">
-            <span class="file-msg">or drag and drop files here</span>
+            <span class="file-msg">OR DRAG AND DROP FILES HERE</span>
             <input class="file-input" type="file" name="tiffdoc" accept=".tiff,.tif" required>
           </div>
         </div>
@@ -77,7 +77,7 @@
 
         <div class="dune_specs">
           <div class="number">
-            <p>Highlight super strong dunes</p>
+            <p>HIGHLIGHT SUPER STRONG DUNES</p>
             <input type="hidden" name="SUPERSTRONG" value="False" />
             <input class="checkbox" type="checkbox" name="SUPERSTRONG" value="True" checked>
           </div>
@@ -108,7 +108,12 @@
       <!-- Converted tiff file -->
       <div class="cimg2">
         <img src="{% static 'outputdata/converted.png' %}" alt="folder" width="20%" height="auto" onerror="this.src='{% static 'images/dune.jpg' %}'">
+        <div class="cimg4">
+            <img src="{% static 'images/colors.png' %}" alt="folder" width="20%" height="auto">
+        </div>
       </div>
+
+
 
       <!-- download button that downloads nothing if 2 inputs aren't given-->
 

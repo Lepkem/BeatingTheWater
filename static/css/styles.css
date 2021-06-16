@@ -48,7 +48,7 @@ body:hover {
   float: left;
   margin-left: 10%;
   width: 32%;
-  height: 32vh;
+  height: 30.5vh;
   min-height: 29vh;
   margin-top: 10vh;
   bottom: 0;
@@ -441,4 +441,18 @@ input.checkbox {
 /* Quick fix for the centering of the dune specifications and font sizes */
 span.input-number-decrement {
     margin-left: 15%;
+}
+
+/* Color legend */
+.converted .cimg2 .cimg4{
+  position: relative;
+  width: 38%;
+  margin-top: -27vh;
+  margin-left: -30%;
+}
+
+.converted .cimg2 .cimg4 img{
+  height: 25vh;
+  width: auto;
+  box-shadow: none;
 }
