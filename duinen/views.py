@@ -34,7 +34,7 @@ def home(request):
             else:
                 duneStrong = False
             # raise exceptiot("Hi")
-            direction = Direction.East if request.POST['OW'] == "Oost" else -1
+            direction = Direction.East if request.POST['OW'] == "East" else -1
             direction = Direction.West if request.POST['OW'] == "West" else direction
             #TODO: replace True with user input value from checkbox
             algosettings = AlgorithmSettings(lengthFromDune, duneHeight, duneLength, direction, duneStrong)
