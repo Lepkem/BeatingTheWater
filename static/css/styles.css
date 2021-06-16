@@ -343,6 +343,8 @@ body:hover {
   float: left;
   width: 52.4%;
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Error handling after converting styling */
@@ -360,6 +362,7 @@ body:hover {
   box-shadow: 5px 5px 0px 0px white;
 }
 
+/* if converted output is empty show nothing */
 .converted .output:empty {
   display: none;
 }
@@ -455,4 +458,7 @@ span.input-number-decrement {
   height: 25vh;
   width: auto;
   box-shadow: none;
+  margin: 0;
+  padding: 0;
+  z-index: 200;
 }
