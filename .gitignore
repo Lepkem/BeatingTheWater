@@ -362,3 +362,4 @@ MigrationBackup/
 
 *.code-workspace
 djang/*
+*.vscode
