@@ -1,7 +1,7 @@
 from typing import Tuple
 import gdal
 import os
-from .datastruct import ImageSingleton, Rating
+from .datastruct import ImageSingleton
 from qgis.core import *
 import sys
 sys.path.append('C:\\OSGeo4W64\\apps\\qgis\\python\\plugins')
@@ -9,7 +9,6 @@ import processing
 
 def render(image: ImageSingleton.Image, source_filepath: str):
     target_path = os.path.join(os.path.dirname(__file__), 'output.tif')
-    #TODO: Check if gtif driver exists
     driver_tiff = gdal.GetDriverByName("GTiff")
     rlayer = QgsRasterLayer(source_filepath, "sourcefile")
     xmin = rlayer.extent().xMinimum()
@@ -29,7 +28,6 @@ def render(image: ImageSingleton.Image, source_filepath: str):
     ypointer = image.y_max
     for column in range(xoffs, xmaxoffs):
         for row in range(yoffs, ymaxoffs):
-            #rating = image.seek(xpointer, ypointer)._rating.value
             node = image.seek(xpointer, ypointer)
             pixelband[row][column] = node._rating.value if node.visited else 0
             ypointer -= ImageSingleton.Image.resolution
@@ -53,7 +51,6 @@ def colortif():
     'OPTIONS':'',
     'EXTRA':'',
     'OUTPUT':outputtif})
-    #TODO: save output file and return it
 
 def find_offset_xy(xmin: float, ymin: float, xtarget:float, ytarget: float, resolution: float) -> Tuple[float, float]:
     find_offset = lambda min, target: int(((target - min) - (target%resolution))//resolution)

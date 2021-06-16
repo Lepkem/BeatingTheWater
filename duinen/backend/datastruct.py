@@ -5,7 +5,6 @@ from math import sqrt
 import math
 import numpy as np
 from typing import Tuple
-import os, tempfile
 from .. import constants
 from qgis.core import *
 from . import geometry, utilities, linearregression
@@ -232,7 +231,7 @@ class Node:
             if(not southeast and self._south._east is not None):
                 subscribe(self._south._east)
                 southeast = True
-    #TODO: replace slope arg by class attr
+                
     def route(self, entry : geometry.Point, route_id : int, issafe: bool) -> Tuple[Node, geometry.Point, float, float]:
         #TODO: Fix floating point inaccuracy
         # if(not self._is_within(entry)):
@@ -330,11 +329,6 @@ class ImageSingleton:
             ImageSingleton.Image.coastline = ImageSingleton.Image.Coastline(start, stop, slope)
             Node.slope = linearregression.perpendicular_slope(self.coastline.slope, settings.dune_direction)
             Node.threshold = settings.threshold
-            #complete the code above
-            #process image pixels into nodes
-            #TODO: replace hardcoded file path
-            #data_file = "C:\\Users\\Alexander\\Desktop\\ProjectD_Data\\SpringertduinenAHNhoogdynamisch\\H_2m_2019_Springertduinen.tif"
-            #TODO: throws a bunch of non-fatal errors
             temppath = inputfiles[constants.DATAKEY].temporary_file_path()
             rlayer = QgsRasterLayer(temppath, "datafile")
             crs = rlayer.crs()
@@ -351,7 +345,6 @@ class ImageSingleton:
             self.y_min = find_boundary(min([point.y for point in corners]), rlayer.extent().yMinimum(), rlayer.rasterUnitsPerPixelY(), 1)
             self.y_max = find_boundary(max([point.y for point in corners]), rlayer.extent().yMaximum(), rlayer.rasterUnitsPerPixelY(), -1)
 
-            #TODO: Link neighbor nodes
             outer = 0
             for x in np.arange(self.x_min, self.x_max, rlayer.rasterUnitsPerPixelX()):
                 inner = 0
@@ -385,10 +378,6 @@ class ImageSingleton:
                 return (min, mindist) if mindist <= maxdist else (max, maxdist)
             startx, distx = closest(self.x_min, self.x_max, x)
             starty, disty = closest(self.y_min, self.y_max, y)
-            ###DEBUG###
-            #xvals = [p.x for p in self.cornerdict.keys()]
-            #yvals = [p.y for p in self.cornerdict.keys()]
-            ###\DEBUG###
             curr = self.cornerdict(startx, starty)
             dirx, diry = self._directions.get(curr)
             while distx >= self.resolution:

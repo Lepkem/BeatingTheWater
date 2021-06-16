@@ -1,13 +1,7 @@
-import csv, os
 from django.shortcuts import render
-from django.template.response import TemplateResponse
-from PIL import Image
 from duinen.backend.geometry import Direction
 from duinen.backend.utilities import AlgorithmSettings
 from django.shortcuts import render
-from django.template.response import TemplateResponse
-from .backend.datastruct import ImageSingleton
-from .backend.algorithm import run
 from duinen.backend import algorithm
 from duinen.backend import topng
 from .backend.topng import removeoldpng
@@ -33,10 +27,8 @@ def home(request):
                 duneStrong = True
             else:
                 duneStrong = False
-            # raise exceptiot("Hi")
             direction = Direction.East if request.POST['OW'] == "East" else -1
             direction = Direction.West if request.POST['OW'] == "West" else direction
-            #TODO: replace True with user input value from checkbox
             algosettings = AlgorithmSettings(lengthFromDune, duneHeight, duneLength, direction, duneStrong)
 
             algorithm.run(request.FILES, algosettings)
