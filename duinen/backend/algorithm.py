@@ -14,6 +14,9 @@ QgsApplication.initQgis()
 
 def run(reqfiles: dict, settings: AlgorithmSettings):
     log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')
+    #delete old logfile to prevent it from growing endlessly
+    if os.path.exists(log_relative_path):
+        os.remove(log_relative_path)
     logging.basicConfig(filename=log_relative_path, level=logging.INFO)
     logging.info(f'Running algorithm with settings: distance={settings.distance}, threshold={settings.threshold}, minwidth={settings.min_width}, direction={settings.dune_direction}')
 
@@ -69,23 +72,24 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     logging.info(f'End of subsection "Stage 2" at {datetime.now()}')
 
     #stage 3: Traverse the image and determine the highest width of strong dunes per path
-    logging.info(f'Start of subsection "Stage 3" at {datetime.now()}')
-    #strongwidths = dict()
-    for point in processed_image.coastline.iterable():
-        node = processed_image.seek(point.x, point.y)
-        currnode = node
-        dist_cum = 0.0
-        str_dist_cum = 0.0
-        max_dist_cum = 0.0
-        while dist_cum < settings.distance:
-            currnode, point, dist, str_dist = currnode.route(point, -1, max_dist_cum >= settings.min_width)
-            dist_cum += dist
-            str_dist_cum = (str_dist_cum + str_dist) if str_dist > 0 else 0
-            if str_dist_cum > max_dist_cum:
-                max_dist_cum = str_dist_cum
-            #logging.info(f'maxstr={max_dist_cum}, strcum={str_dist_cum}, strdist={str_dist}, minwidth={settings.min_width}, issafe={max_dist_cum >= settings.min_width}')
-        #strongwidths[node] = str_dist_cum
-    logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
+    if settings.marksafe:
+        logging.info(f'Start of subsection "Stage 3" at {datetime.now()}')
+        #strongwidths = dict()
+        for point in processed_image.coastline.iterable():
+            node = processed_image.seek(point.x, point.y)
+            currnode = node
+            dist_cum = 0.0
+            str_dist_cum = 0.0
+            max_dist_cum = 0.0
+            while dist_cum < settings.distance:
+                currnode, point, dist, str_dist = currnode.route(point, -1, max_dist_cum >= settings.min_width)
+                dist_cum += dist
+                str_dist_cum = (str_dist_cum + str_dist) if str_dist > 0 else 0
+                if str_dist_cum > max_dist_cum:
+                    max_dist_cum = str_dist_cum
+                #logging.info(f'maxstr={max_dist_cum}, strcum={str_dist_cum}, strdist={str_dist}, minwidth={settings.min_width}, issafe={max_dist_cum >= settings.min_width}')
+            #strongwidths[node] = str_dist_cum
+        logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
 
     #end of algorithm
     logging.info(f'End of section "Algorithm" at {datetime.now()}')

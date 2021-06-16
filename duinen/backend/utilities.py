@@ -2,11 +2,12 @@ import csv
 from . import geometry
 
 class AlgorithmSettings:
-    def __init__(self, distance: float, threshold: float, min_width: float, dune_direction: int):
+    def __init__(self, distance: float, threshold: float, min_width: float, dune_direction: int, marksafe: bool):
         self.distance = distance
         self.threshold = threshold
         self.min_width = min_width
         self.dune_direction = dune_direction
+        self.marksafe = marksafe
 
 def csvToDictFunction(csvinput):
     data = {}
