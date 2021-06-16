@@ -11,6 +11,7 @@ from .backend.algorithm import run
 from duinen.backend import algorithm
 from duinen.backend import topng
 from .backend.topng import removeoldpng
+from .backend.topng import removefiles
 
 def home(request):
     template = "home.html"
@@ -18,12 +19,14 @@ def home(request):
 
     # Remove loaded pngs
     removeoldpng()
+    removefiles()
 
     # The Convert button is clicked
     if request.method == 'POST':
         lengthFromDune = int(request.POST['LFD'])
         duneHeight = int(request.POST['HEIGHT'])
         duneLength = int(request.POST['LENGTH'])
+        duneStrong = bool(request.POST['SUPERSTRONG'])
         direction = Direction.East if request.POST['OW'] == "Oost" else -1
         direction = Direction.West if request.POST['OW'] == "West" else direction
         if 'csvdoc' in request.POST is None or 'tiffdoc' in request.POST:

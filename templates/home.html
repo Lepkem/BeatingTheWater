@@ -75,6 +75,13 @@
           </div>
         </div>
 
+        <div class="dune_specs">
+          <div class="number">
+            <p>Highlight super strong dunes</p>
+            <input class="checkbox" type="checkbox" name="SUPERSTRONG" value="yes" checked>
+          </div>
+        </div>
+
       </div>
 
       <!-- Convert button  -->
@@ -104,11 +111,23 @@
 
       <!-- download button that downloads nothing if 2 inputs aren't given-->
 
+      {% if downloadable %}
+
       <div class="cimg3">
         <a href="{% static 'outputdata/converted.tif' %}" download>
           <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
         </a>
       </div>
+
+      {% else %}
+
+      <div class="cimg3">
+        <a class ="nonclick" href="">
+          <img src="{% static 'images/download.png' %}" alt="folder" width="20%" height="auto">
+        </a>
+      </div>
+
+      {% endif %}
     </div>
 
     <!-- Script to load jquery -->
