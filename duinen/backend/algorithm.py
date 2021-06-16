@@ -20,9 +20,7 @@ QgsApplication.initQgis()
 def run(reqfiles: dict, settings: AlgorithmSettings):
     log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')
     #delete old logfile to prevent it from growing endlessly
-    if os.path.exists(log_relative_path):
-        os.remove(log_relative_path)
-    logging.basicConfig(filename=log_relative_path, level=logging.INFO)
+    logging.basicConfig(filename=log_relative_path, level=logging.WARNING)
     logging.info(f'Running algorithm with settings: distance={settings.distance}, threshold={settings.threshold}, minwidth={settings.min_width}, direction={settings.dune_direction}')
 
     #Image processing

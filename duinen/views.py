@@ -29,11 +29,15 @@ def home(request):
             lengthFromDune = int(request.POST['LFD'])
             duneHeight = int(request.POST['HEIGHT'])
             duneLength = int(request.POST['LENGTH'])
-            duneStrong = bool(request.POST['SUPERSTRONG'])
+            if request.POST['SUPERSTRONG'] == 'True':
+                duneStrong = True
+            else:
+                duneStrong = False
+            # raise exceptiot("Hi")
             direction = Direction.East if request.POST['OW'] == "Oost" else -1
             direction = Direction.West if request.POST['OW'] == "West" else direction
             #TODO: replace True with user input value from checkbox
-            algosettings = AlgorithmSettings(lengthFromDune, duneHeight, duneLength, direction, True)
+            algosettings = AlgorithmSettings(lengthFromDune, duneHeight, duneLength, direction, duneStrong)
 
             algorithm.run(request.FILES, algosettings)
             context['downloadable'] = True
