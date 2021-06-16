@@ -1,5 +1,4 @@
-from duinen.backend.geometry import Direction
-from .datastruct import ImageSingleton, Node
+from .datastruct import ImageSingleton
 from .utilities import AlgorithmSettings
 from .renderer import render, colortif
 from .. import constants
@@ -19,7 +18,7 @@ QgsApplication.initQgis()
 
 def run(reqfiles: dict, settings: AlgorithmSettings):
     log_relative_path = os.path.join(os.path.dirname(__file__), 'logfile.log')
-    #delete old logfile to prevent it from growing endlessly
+    #TODO: prevent logfile from growing endlessly as the program is executed many times
     logging.basicConfig(filename=log_relative_path, level=logging.WARNING)
     logging.info(f'Running algorithm with settings: distance={settings.distance}, threshold={settings.threshold}, minwidth={settings.min_width}, direction={settings.dune_direction}')
 
@@ -33,8 +32,8 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     #refit user provided parameters into the distance units of the data file
     settings.distance = settings.distance*ImageSingleton.Image.meter_to_source_unit_conversion_factor
     settings.min_width = settings.min_width*ImageSingleton.Image.meter_to_source_unit_conversion_factor
-    logging.info(f'conversion factor: {ImageSingleton.Image.meter_to_source_unit_conversion_factor}')
-    logging.info(f'dist={settings.distance}, minwidth={settings.min_width}')
+    # logging.info(f'conversion factor: {ImageSingleton.Image.meter_to_source_unit_conversion_factor}')
+    # logging.info(f'dist={settings.distance}, minwidth={settings.min_width}')
     logging.debug(f'after populate call at {datetime.now()}')
     logging.info(f'End of section "Image processing" at {datetime.now()}')
 
@@ -49,16 +48,6 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
         node = processed_image.seek(point.x, point.y)
         dist_cum = 0.0
         while dist_cum < settings.distance:
-            ###DEBUG###
-            # slope = Node.slope.slope
-            # xprog = Node.slope.x_progression
-            # north = node.get_neighbor(Direction.North)
-            # south = node.get_neighbor(Direction.South)
-            # west = node.get_neighbor(Direction.West)
-            # east = node.get_neighbor(Direction.East)
-            # north_neigh = [north.get_neighbor(x) for x in [Direction.East, Direction.South, Direction.West, Direction.North]]
-            # raise RuntimeError("DEBUG")
-            ###DEBUG
             node, point, dist, str_dist = node.route(point, route_id, False)
             dist_cum += dist
             notify_queue.append((node, route_id))
@@ -77,7 +66,6 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     #stage 3: Traverse the image and determine the highest width of strong dunes per path
     if settings.marksafe:
         logging.info(f'Start of subsection "Stage 3" at {datetime.now()}')
-        #strongwidths = dict()
         for point in processed_image.coastline.iterable():
             node = processed_image.seek(point.x, point.y)
             currnode = node
@@ -91,7 +79,6 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
                 if str_dist_cum > max_dist_cum:
                     max_dist_cum = str_dist_cum
                 #logging.info(f'maxstr={max_dist_cum}, strcum={str_dist_cum}, strdist={str_dist}, minwidth={settings.min_width}, issafe={max_dist_cum >= settings.min_width}')
-            #strongwidths[node] = str_dist_cum
         logging.info(f'End of subsection "Stage 3" at {datetime.now()}')
 
     #end of algorithm
@@ -100,7 +87,6 @@ def run(reqfiles: dict, settings: AlgorithmSettings):
     #render output
     logging.info(f'Start of section "Render" at {datetime.now()}')
 
-    #TODO: Implement rendering
     render(processed_image, reqfiles[constants.DATAKEY].temporary_file_path())
     colortif()
     cout()
